@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <radialGradient id="bg-grad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#18112b"/>
+      <stop offset="100%" stop-color="#050508"/>
+    </radialGradient>
+    <linearGradient id="spark-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffe699"/>
+      <stop offset="50%" stop-color="#ffb703"/>
+      <stop offset="100%" stop-color="#fb8500"/>
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="15" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="512" height="512" rx="128" fill="url(#bg-grad)"/>
+  
+  <!-- Outer Ring -->
+  <circle cx="256" cy="256" r="210" fill="none" stroke="url(#spark-grad)" stroke-width="4" opacity="0.3" filter="url(#glow)"/>
+  
+  <!-- Center Star/Spark shape -->
+  <path d="M 256,96 
+           C 256,180 180,256 96,256 
+           C 180,256 256,332 256,416 
+           C 256,332 332,256 416,256 
+           C 332,256 256,180 256,96 Z" 
+        fill="url(#spark-grad)" 
+        filter="url(#glow)"/>
+  
+  <!-- Micro Star in Corner -->
+  <path d="M 390,120 
+           C 390,135 375,150 360,150 
+           C 375,150 390,165 390,180 
+           C 390,165 405,150 420,150 
+           C 405,150 390,135 390,120 Z" 
+        fill="#ffe699" 
+        opacity="0.8"/>
+</svg>

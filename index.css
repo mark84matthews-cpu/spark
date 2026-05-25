@@ -1,0 +1,634 @@
+/* Reset & Core Styling */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: #050508;
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  color: #ffffff;
+}
+
+/* Background Cross-Fade Layers */
+.bg-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  opacity: 0;
+  transition: opacity 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1;
+}
+
+.bg-layer.active {
+  opacity: 1;
+  z-index: 2;
+}
+
+/* Dark Vignette Overlay for maximum text readability */
+.bg-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at center, rgba(5, 5, 8, 0.3) 0%, rgba(5, 5, 8, 0.65) 70%, rgba(5, 5, 8, 0.85) 100%);
+  z-index: 3;
+}
+
+/* Main Canvas Wrapper */
+#app-canvas {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 40px 24px calc(40px + window-significant-padding);
+  z-index: 4;
+}
+
+/* Centered Quote Display Card */
+#quote-card {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  max-width: 520px;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+/* Breathing Glowing Quote Text */
+#quote-text {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 2.1rem;
+  font-weight: 300;
+  line-height: 1.45;
+  color: #ffffff;
+  margin-bottom: 18px;
+  letter-spacing: -0.2px;
+  animation: breatheGlow 8s ease-in-out infinite;
+  user-select: none;
+}
+
+/* Quote Author Metadata */
+#quote-author {
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 2.5px;
+  color: #ffe699;
+  opacity: 0.85;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  margin-top: 5px;
+}
+
+/* Breathing Glow Animation */
+@keyframes breatheGlow {
+  0%, 100% {
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.18), 0 0 22px rgba(255, 230, 153, 0.08);
+    transform: scale(1);
+  }
+  50% {
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.32), 0 0 35px rgba(255, 230, 153, 0.22);
+    transform: scale(1.012);
+  }
+}
+
+/* Controls Container (Pills + Mic) */
+#controls-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: max(10px, env(safe-area-inset-bottom));
+}
+
+/* Microphone Button */
+#mic-btn {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  outline: none;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#mic-btn:active {
+  transform: scale(0.92);
+  background: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+}
+
+.mic-icon {
+  width: 18px;
+  height: 18px;
+  transition: transform 0.3s ease;
+}
+
+#mic-btn:hover .mic-icon {
+  transform: scale(1.05);
+}
+
+/* Tiny Pill Mood Selector */
+#mood-selector {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 30px;
+  padding: 3px 4px;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  gap: 2px;
+}
+
+/* Micro Button Pill */
+.mood-btn {
+  border: none;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.5);
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 400;
+  letter-spacing: 0.4px;
+  padding: 5px 11px;
+  border-radius: 15px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  outline: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Mood Indicators Dots */
+.mood-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+/* Color definitions per mood */
+#btn-hopeful .mood-dot { background-color: #ffb703; }
+#btn-determined .mood-dot { background-color: #00e5ff; }
+#btn-peaceful .mood-dot { background-color: #d6b4fc; }
+#btn-inspired .mood-dot { background-color: #ff5252; }
+
+/* Active States */
+.mood-btn.active {
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+  font-weight: 500;
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1);
+}
+
+.mood-btn:active {
+  transform: scale(0.96);
+}
+
+/* Listening Mode Styles */
+#mic-btn.listening {
+  color: #ff5252;
+  border-color: rgba(255, 82, 82, 0.4);
+  box-shadow: 0 0 15px rgba(255, 82, 82, 0.3);
+}
+
+#mic-btn.listening .pulse-ring {
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  border: 1px solid #ff5252;
+  border-radius: 50%;
+  animation: pulse 1.5s cubic-bezier(0.24, 0, 0.38, 1) infinite;
+  opacity: 0;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); opacity: 0.5; }
+  100% { transform: scale(1.35); opacity: 0; }
+}
+
+/* Translucent Minimal Confirmation Modal */
+#dictation-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(5, 5, 8, 0.85);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 24px;
+  z-index: 100;
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  opacity: 1;
+  transition: opacity 0.4s ease;
+}
+
+#dictation-overlay.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.modal-card {
+  background: rgba(20, 20, 28, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  padding: 28px 24px;
+  width: 100%;
+  max-width: 380px;
+  text-align: center;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+}
+
+.spinner {
+  width: 32px;
+  height: 32px;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-top-color: #ffe699;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.status-msg {
+  font-size: 0.95rem;
+  color: #ffe699;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+.transcription-box {
+  width: 100%;
+  min-height: 80px;
+  max-height: 160px;
+  overflow-y: auto;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  padding: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+#transcription-text {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 1.25rem;
+  line-height: 1.4;
+  color: rgba(255, 255, 255, 0.9);
+  font-style: italic;
+}
+
+.modal-actions {
+  display: flex;
+  width: 100%;
+  gap: 12px;
+  margin-top: 6px;
+}
+
+.modal-btn {
+  flex: 1;
+  border: none;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 500;
+  padding: 10px 16px;
+  border-radius: 12px;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.modal-btn.primary {
+  background: #ffe699;
+  color: #050508;
+  box-shadow: 0 4px 12px rgba(255, 230, 153, 0.2);
+}
+
+.modal-btn.primary:active {
+  transform: scale(0.97);
+  background: #ffdb70;
+}
+
+.modal-btn.secondary {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.modal-btn.secondary:active {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+}
+
+.modal-btn.hidden {
+  display: none;
+}
+
+/* Animations helper */
+.fade-in {
+  animation: fadeIn 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* Optimization for Tall/Notch phones */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  #app-canvas {
+    padding-bottom: calc(30px + env(safe-area-inset-bottom));
+  }
+}
+
+/* ----------------------------------------------------
+   AI MULTI-SELECT & SETTINGS KEY STYLE UPGRADES
+   ---------------------------------------------------- */
+
+/* Settings Toggle Button (Top Right) */
+#settings-btn {
+  position: absolute;
+  top: max(20px, env(safe-area-inset-top));
+  right: 24px;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.45);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  outline: none;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+  z-index: 10;
+}
+
+#settings-btn:hover {
+  color: #ffe699;
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.15);
+  transform: rotate(45deg);
+}
+
+#settings-btn:active {
+  transform: scale(0.92);
+}
+
+.settings-icon {
+  width: 16px;
+  height: 16px;
+}
+
+/* Settings Modal Specifics */
+.settings-title {
+  font-size: 1.15rem;
+  font-weight: 500;
+  color: #ffffff;
+  letter-spacing: 0.5px;
+}
+
+.settings-desc {
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.6);
+  line-height: 1.4;
+}
+
+.font-small {
+  font-size: 0.72rem !important;
+}
+
+.settings-input {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  padding: 10px 14px;
+  color: #ffffff;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.85rem;
+  outline: none;
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+.settings-input:focus {
+  border-color: #ffe699;
+  box-shadow: 0 0 10px rgba(255, 230, 153, 0.2);
+}
+
+/* Upgraded Wide Modal for Option Decks */
+.wide-modal {
+  max-width: 440px !important;
+}
+
+/* Quote Selection Container & Lists */
+.quote-options-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.selection-instruction {
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.55);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-align: left;
+  margin-bottom: 2px;
+}
+
+.options-scroll-list {
+  width: 100%;
+  max-height: 250px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-right: 4px;
+}
+
+/* Options Scrollbar Styling */
+.options-scroll-list::-webkit-scrollbar {
+  width: 4px;
+}
+
+.options-scroll-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.options-scroll-list::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 2px;
+}
+
+/* Card Option Items */
+.quote-option-card {
+  position: relative;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 12px 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  text-align: left;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  user-select: none;
+}
+
+.quote-option-card:hover {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Selected Active Option Card */
+.quote-option-card.selected {
+  background: rgba(255, 230, 153, 0.04);
+  border-color: rgba(255, 230, 153, 0.3);
+  box-shadow: 0 4px 15px rgba(255, 230, 153, 0.03);
+}
+
+/* Checkbox Dot Indicator */
+.card-checkbox {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+  transition: all 0.2s ease;
+}
+
+.quote-option-card.selected .card-checkbox {
+  background: #ffe699;
+  border-color: #ffe699;
+}
+
+.checkbox-tick {
+  width: 8px;
+  height: 6px;
+  border-left: 1.5px solid #050508;
+  border-bottom: 1.5px solid #050508;
+  transform: rotate(-45deg) translate(1px, -0.5px);
+  opacity: 0;
+}
+
+.quote-option-card.selected .checkbox-tick {
+  opacity: 1;
+}
+
+/* Option Content Details */
+.card-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.option-text {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 1.05rem;
+  line-height: 1.35;
+  color: rgba(255, 255, 255, 0.9);
+  font-style: italic;
+}
+
+.option-author {
+  font-size: 0.65rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #ffe699;
+  opacity: 0.8;
+}
+
+/* Batch Mood Tagging dropdown styles */
+.batch-mood-container {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 10px;
+  padding: 8px 12px;
+  margin-top: 4px;
+}
+
+.batch-mood-container label {
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.6);
+  font-weight: 400;
+  letter-spacing: 0.5px;
+}
+
+#batch-mood-select {
+  background: rgba(5, 5, 8, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.75rem;
+  padding: 4px 8px;
+  border-radius: 6px;
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+}
+
+#batch-mood-select:focus {
+  border-color: #ffe699;
+}
+

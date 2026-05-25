@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Spark</title>
+  
+  <!-- PWA Meta Tags -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icon.svg">
+  <meta name="theme-color" content="#050508">
+
+  <!-- Google Fonts for Ultra-Premium Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Outfit:wght@300;400;500&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="index.css">
+</head>
+<body>
+
+  <!-- Background Landscape Containers (for smooth cross-fade transition) -->
+  <div id="bg-layer-1" class="bg-layer active"></div>
+  <div id="bg-layer-2" class="bg-layer"></div>
+  <div class="bg-overlay"></div>
+
+  <!-- Main Canvas -->
+  <main id="app-canvas">
+    
+    <!-- Subtle Settings Gear Icon -->
+    <button id="settings-btn" aria-label="Settings" class="icon-btn">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="settings-icon">
+        <circle cx="12" cy="12" r="3"></circle>
+        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+      </svg>
+    </button>
+    
+    <!-- Centered Quote Display -->
+    <div id="quote-card" class="fade-in">
+      <p id="quote-text">Loading inspiration...</p>
+      <p id="quote-author"></p>
+    </div>
+    
+    <!-- Controls Layer -->
+    <div id="controls-container">
+      
+      <!-- Microphone Button for Dictation -->
+      <button id="mic-btn" aria-label="Add custom moment with voice">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mic-icon">
+          <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path>
+          <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+          <line x1="12" x2="12" y1="19" y2="22"></line>
+        </svg>
+        <span class="pulse-ring"></span>
+      </button>
+
+      <!-- Tiny Pill Mood Buttons -->
+      <nav id="mood-selector">
+        <button class="mood-btn active" data-mood="hopeful" id="btn-hopeful">
+          <span class="mood-dot"></span> Hopeful
+        </button>
+        <button class="mood-btn" data-mood="determined" id="btn-determined">
+          <span class="mood-dot"></span> Determined
+        </button>
+        <button class="mood-btn" data-mood="peaceful" id="btn-peaceful">
+          <span class="mood-dot"></span> Peaceful
+        </button>
+        <button class="mood-btn" data-mood="inspired" id="btn-inspired">
+          <span class="mood-dot"></span> Inspired
+        </button>
+      </nav>
+      
+    </div>
+
+    <!-- Upgraded Voice Dictation & Multi-Quote Selector Modal -->
+    <div id="dictation-overlay" class="hidden">
+      <div class="modal-card wide-modal">
+        <div class="spinner" id="modal-spinner"></div>
+        <p class="status-msg" id="modal-status">Listening...</p>
+        
+        <!-- Phase 1: Real-time Voice Transcription -->
+        <div class="transcription-box" id="voice-transcription-container">
+          <p id="transcription-text"></p>
+        </div>
+        
+        <!-- Phase 2: AI Quote Option Deck (Hidden during speaking/searching) -->
+        <div class="quote-options-container hidden" id="quote-options-container">
+          <p class="selection-instruction">Select the Sparks you want to save:</p>
+          <div class="options-scroll-list" id="options-scroll-list">
+            <!-- Dynamic option items go here -->
+          </div>
+          
+          <!-- Batch Mood Tagging -->
+          <div class="batch-mood-container">
+            <label for="batch-mood-select">Save to Feeling:</label>
+            <select id="batch-mood-select">
+              <option value="hopeful">☀️ Hopeful</option>
+              <option value="determined">🛡️ Determined</option>
+              <option value="peaceful">🪶 Peaceful</option>
+              <option value="inspired">🔥 Inspired</option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="modal-actions" id="modal-actions-container">
+          <button id="cancel-dictation" class="modal-btn secondary">Cancel</button>
+          <button id="try-again-dictation" class="modal-btn secondary hidden">Try Again</button>
+          <button id="save-dictation" class="modal-btn primary hidden">Save Sparks (0)</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Translucent Settings Modal (API Key management) -->
+    <div id="settings-overlay" class="hidden">
+      <div class="modal-card">
+        <h3 class="settings-title">AI Quote Finder</h3>
+        <p class="settings-desc font-small">Paste your free Gemini API Key from Google AI Studio to unlock dynamic book search and quote matching.</p>
+        <input type="password" id="gemini-key-input" placeholder="API Key (AIzaSy...)" class="settings-input">
+        <div class="modal-actions">
+          <button id="close-settings" class="modal-btn secondary">Cancel</button>
+          <button id="save-settings" class="modal-btn primary">Save Key</button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Firebase Core & Firestore SDKs (v8 standard for easy CDN imports) -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+  <script src="firebase-config.js"></script>
+  
+  <script src="app.js"></script>
+</body>
+</html>
