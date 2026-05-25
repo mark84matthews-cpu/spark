@@ -338,6 +338,7 @@ function renderActiveSpark() {
     quoteText.textContent = spark.text;
     quoteAuthor.textContent = spark.author;
     document.getElementById('quote-mood-tag').value = spark.mood;
+    document.getElementById('quote-style-tag').value = spark.styleClass || "style-serene-lexend";
     
     // Reset previous style classes
     quoteText.className = "";
@@ -410,8 +411,8 @@ localSearchInput.addEventListener('input', () => {
 
 // Tap quote card to cycle quotes
 quoteCard.addEventListener('click', (e) => {
-  // Stop cycling if they clicked the individual mood pill
-  if (e.target.closest('#quote-mood-tag')) return;
+  // Stop cycling if they clicked the individual mood or style pills
+  if (e.target.closest('#quote-mood-tag') || e.target.closest('#quote-style-tag')) return;
 
   const pool = getFilteredSparks();
   if (pool.length > 1) {
@@ -455,6 +456,35 @@ document.getElementById('quote-mood-tag').addEventListener('change', async (e) =
     currentSparkIndex = newPool.length - 1;
   }
   
+  renderActiveSpark();
+});
+
+// Change active quote style/font on the fly
+document.getElementById('quote-style-tag').addEventListener('change', async (e) => {
+  const pool = getFilteredSparks();
+  if (pool.length === 0) return;
+  
+  const activeSpark = pool[currentSparkIndex];
+  const newStyle = e.target.value;
+  
+  if (activeSpark.styleClass === newStyle) return;
+  
+  // 1. Update style locally
+  activeSpark.styleClass = newStyle;
+  saveToLocalStorage();
+  
+  // 2. Sync style update to Firestore cloud
+  if (db) {
+    try {
+      await db.collection("moments").doc(activeSpark.id).update({
+        styleClass: newStyle
+      });
+    } catch (err) {
+      console.warn("Could not sync style re-tag to cloud. Local secure.", err);
+    }
+  }
+  
+  // 3. Immediately re-render active quote to display the new typeface & glow instantly
   renderActiveSpark();
 });
 

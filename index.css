@@ -617,35 +617,47 @@ html, body {
   box-shadow: 0 0 10px rgba(255, 230, 153, 0.2);
 }
 
-/* Upgraded Wide Modal for Option Decks */
+/* Upgraded Wide Modal for Option Decks (Premium Full-Screen Layout) */
 .wide-modal {
-  max-width: 440px !important;
+  width: 96% !important;
+  max-width: 600px !important;
+  height: 92vh !important;
+  max-height: 92vh !important;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 24px 20px !important;
+  border-radius: 24px !important;
 }
 
 /* Quote Selection Container & Lists */
 .quote-options-container {
   width: 100%;
+  flex: 1; /* occupy all available vertical space dynamically */
   display: flex;
   flex-direction: column;
   gap: 12px;
+  min-height: 0; /* important for flex scrolling containment! */
+  margin: 6px 0;
 }
 
 .selection-instruction {
-  font-size: 0.72rem;
-  color: rgba(255, 255, 255, 0.55);
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.6);
   text-transform: uppercase;
   letter-spacing: 1px;
   text-align: left;
   margin-bottom: 2px;
+  font-weight: 500;
 }
 
 .options-scroll-list {
   width: 100%;
-  max-height: 250px;
+  flex: 1; /* let the list grow freely inside the full screen card */
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 12px;
   padding-right: 4px;
 }
 
@@ -733,20 +745,21 @@ html, body {
 }
 
 .option-text {
-  font-family: 'Cormorant Garamond', Georgia, serif;
-  font-size: 1.05rem;
-  line-height: 1.35;
-  color: rgba(255, 255, 255, 0.9);
-  font-style: italic;
+  font-family: 'Lexend', -apple-system, sans-serif; /* Clean, highly-legible sans-serif for reading comfort */
+  font-size: clamp(1.18rem, 4vw, 1.45rem); /* Substantially larger text for easy dyslexic reading */
+  line-height: 1.45;
+  color: #ffffff; /* 100% solid high-contrast white */
+  font-style: normal; /* Completely upright, zero italic slants */
 }
 
 .option-author {
-  font-size: 0.65rem;
-  font-weight: 500;
+  font-size: 0.76rem; /* Scaled up for readability */
+  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 1px;
   color: #ffe699;
-  opacity: 0.8;
+  opacity: 0.95; /* High solid contrast */
+  margin-top: 4px;
 }
 
 /* Slide-Down Local Search Panel */
@@ -978,5 +991,14 @@ html, body {
 .backdrop-grid-container::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.15);
   border-radius: 2px;
+}
+
+/* Flex Row for Mood & Style dropdown selectors */
+.meta-pills-row {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  align-items: center;
+  margin-top: 4px;
 }
 
