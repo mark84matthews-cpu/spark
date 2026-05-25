@@ -129,8 +129,11 @@
         <!-- Phase 1: Real-time Editable Voice Transcription -->
         <div class="transcription-box" id="voice-transcription-container">
           <textarea id="transcription-text" class="transcription-textarea" placeholder="Speak or edit your prompt here..."></textarea>
-          <!-- Manual fetch button in case they edit the text -->
-          <button id="search-edited-btn" class="modal-btn primary hidden">Find Book Quotes</button>
+          <!-- Manual save or online lookup buttons -->
+          <div class="modal-actions" style="margin-top: 10px; width: 100%;">
+            <button id="save-personal-quote-btn" class="modal-btn secondary hidden">Save Personal Spark</button>
+            <button id="search-edited-btn" class="modal-btn primary hidden">Find Book Quotes</button>
+          </div>
         </div>
         
         <!-- Phase 2: AI Quote Option Deck (Hidden during speaking/searching) -->

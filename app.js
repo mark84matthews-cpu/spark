@@ -136,6 +136,7 @@ const modalStatus = document.getElementById('modal-status');
 const voiceContainer = document.getElementById('voice-transcription-container');
 const transcriptionText = document.getElementById('transcription-text');
 const searchEditedBtn = document.getElementById('search-edited-btn');
+const savePersonalQuoteBtn = document.getElementById('save-personal-quote-btn');
 const quoteOptionsContainer = document.getElementById('quote-options-container');
 const optionsScrollList = document.getElementById('options-scroll-list');
 
@@ -574,6 +575,7 @@ if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
     modalSpinner.classList.remove('hidden');
     voiceContainer.classList.remove('hidden');
     searchEditedBtn.classList.add('hidden');
+    savePersonalQuoteBtn.classList.add('hidden');
     quoteOptionsContainer.classList.add('hidden');
     
     // Action buttons initial state
@@ -608,6 +610,7 @@ if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
     modalStatus.textContent = "Microphone error. You can type your search below.";
     modalSpinner.classList.add('hidden');
     searchEditedBtn.classList.remove('hidden');
+    savePersonalQuoteBtn.classList.remove('hidden');
   };
 
   recognition.onend = () => {
@@ -617,6 +620,7 @@ if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
     
     doneSpeakingBtn.classList.add('hidden');
     searchEditedBtn.classList.remove('hidden');
+    savePersonalQuoteBtn.classList.remove('hidden');
     tryAgainDictation.classList.remove('hidden');
   };
 }
@@ -626,6 +630,7 @@ async function processSpokenQuery(queryText) {
   modalStatus.textContent = "Searching online book quote archive...";
   voiceContainer.classList.add('hidden');
   doneSpeakingBtn.classList.add('hidden');
+  savePersonalQuoteBtn.classList.add('hidden');
   
   try {
     const data = await queryAIQuotes(queryText);
@@ -734,11 +739,32 @@ searchEditedBtn.addEventListener('click', () => {
     modalSpinner.classList.remove('hidden');
     modalStatus.textContent = "Searching book quotes archive...";
     searchEditedBtn.classList.add('hidden');
+    savePersonalQuoteBtn.classList.add('hidden');
     tryAgainDictation.classList.add('hidden');
     processSpokenQuery(text);
   } else {
     alert("Please speak or type a longer search query.");
   }
+});
+
+// Save custom/personal quote directly without online query
+savePersonalQuoteBtn.addEventListener('click', async () => {
+  if (recognition) {
+    recognition.stop();
+  }
+  const text = transcriptionText.value.trim();
+  if (text.length < 2) {
+    alert("Please type or speak your custom quote first.");
+    return;
+  }
+  
+  // Directly save locally and cloud sync under the currently active mood
+  await addSpark(text, "Personal Reflection", currentMood);
+  
+  // Close modal and focus on the newly added quote
+  dictationOverlay.classList.add('hidden');
+  currentSparkIndex = 0;
+  renderActiveSpark();
 });
 
 cancelDictation.addEventListener('click', () => {
