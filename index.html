@@ -29,16 +29,32 @@
   <!-- Main Canvas -->
   <main id="app-canvas">
     
-    <!-- Subtle Settings Gear Icon -->
-    <button id="settings-btn" aria-label="Settings" class="icon-btn">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="settings-icon">
-        <circle cx="12" cy="12" r="3"></circle>
-        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-      </svg>
-    </button>
+    <!-- Top Action Headers -->
+    <div id="top-actions">
+      <!-- Minimalist Local Search Bar Toggle -->
+      <button id="search-toggle-btn" aria-label="Search saved sparks" class="icon-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="settings-icon">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" x2="16.65" y1="21" y2="16.65"></line>
+        </svg>
+      </button>
+
+      <!-- Subtle Settings Gear Icon -->
+      <button id="settings-btn" aria-label="Settings" class="icon-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="settings-icon">
+          <circle cx="12" cy="12" r="3"></circle>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Slide-Down Local Search Input -->
+    <div id="local-search-container" class="hidden">
+      <input type="text" id="local-search-input" placeholder="Search saved sparks (Wit, Kaladin...)" autocomplete="off">
+    </div>
     
     <!-- Centered Quote Display -->
-    <div id="quote-card" class="fade-in">
+    <div id="quote-card">
       <p id="quote-text">Loading inspiration...</p>
       <p id="quote-author"></p>
     </div>
@@ -80,46 +96,52 @@
         <div class="spinner" id="modal-spinner"></div>
         <p class="status-msg" id="modal-status">Listening...</p>
         
-        <!-- Phase 1: Real-time Voice Transcription -->
+        <!-- Phase 1: Real-time Editable Voice Transcription -->
         <div class="transcription-box" id="voice-transcription-container">
-          <p id="transcription-text"></p>
+          <textarea id="transcription-text" class="transcription-textarea" placeholder="Speak or edit your prompt here..."></textarea>
+          <!-- Manual fetch button in case they edit the text -->
+          <button id="search-edited-btn" class="modal-btn primary hidden">Find Book Quotes</button>
         </div>
         
         <!-- Phase 2: AI Quote Option Deck (Hidden during speaking/searching) -->
         <div class="quote-options-container hidden" id="quote-options-container">
-          <p class="selection-instruction">Select the Sparks you want to save:</p>
+          <p class="selection-instruction">Select and tag each Spark individually:</p>
           <div class="options-scroll-list" id="options-scroll-list">
-            <!-- Dynamic option items go here -->
-          </div>
-          
-          <!-- Batch Mood Tagging -->
-          <div class="batch-mood-container">
-            <label for="batch-mood-select">Save to Feeling:</label>
-            <select id="batch-mood-select">
-              <option value="hopeful">☀️ Hopeful</option>
-              <option value="determined">🛡️ Determined</option>
-              <option value="peaceful">🪶 Peaceful</option>
-              <option value="inspired">🔥 Inspired</option>
-            </select>
+            <!-- Dynamic option items go here with individual checkboxes & selectors -->
           </div>
         </div>
         
         <div class="modal-actions" id="modal-actions-container">
           <button id="cancel-dictation" class="modal-btn secondary">Cancel</button>
+          <button id="done-speaking-btn" class="modal-btn primary hidden">Done Speaking</button>
           <button id="try-again-dictation" class="modal-btn secondary hidden">Try Again</button>
-          <button id="save-dictation" class="modal-btn primary hidden">Save Sparks (0)</button>
+          <button id="save-dictation" class="modal-btn primary hidden">Save Selected (0)</button>
         </div>
       </div>
     </div>
 
-    <!-- Translucent Settings Modal (API Key management) -->
+    <!-- Translucent Settings Modal (API Key & Dynamic AI Text Pulls) -->
     <div id="settings-overlay" class="hidden">
-      <div class="modal-card">
-        <h3 class="settings-title">AI Quote Finder</h3>
-        <p class="settings-desc font-small">Paste your free Gemini API Key from Google AI Studio to unlock dynamic book search and quote matching.</p>
-        <input type="password" id="gemini-key-input" placeholder="API Key (AIzaSy...)" class="settings-input">
+      <div class="modal-card wide-modal scroll-modal">
+        <h3 class="settings-title">Spark Dashboard</h3>
+        
+        <div class="settings-section">
+          <label class="settings-label">Gemini API Key</label>
+          <input type="password" id="gemini-key-input" placeholder="API Key (AIzaSy...)" class="settings-input">
+        </div>
+        
+        <!-- Text-based AI Search & Pull Feature -->
+        <hr class="settings-divider">
+        
+        <div class="settings-section">
+          <h4 class="settings-section-title">Pull Sparks from Literature</h4>
+          <p class="settings-desc font-small">Type what quotes you want to retrieve (e.g., "quotes on resilience from Brandon Sanderson" or "Wit quotes on art").</p>
+          <input type="text" id="ai-text-query-input" placeholder="Type prompt (e.g. Wit quotes on hope)..." class="settings-input">
+          <button id="ai-text-query-btn" class="modal-btn primary width-100">Fetch Quotes from AI</button>
+        </div>
+        
         <div class="modal-actions">
-          <button id="close-settings" class="modal-btn secondary">Cancel</button>
+          <button id="close-settings" class="modal-btn secondary">Close Settings</button>
           <button id="save-settings" class="modal-btn primary">Save Key</button>
         </div>
       </div>

@@ -66,29 +66,18 @@ const DEFAULT_SPARKS = [
   }
 ];
 
-// Fallback natural background pools by mood for dynamic user quotes
-const NATURE_FALLBACKS = {
-  hopeful: [
-    "https://images.unsplash.com/photo-1502082553048-f009c37129b9?auto=format&fit=crop&w=1200&q=80",
-    "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=1200&q=80",
-    "https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?auto=format&fit=crop&w=1200&q=80"
-  ],
-  determined: [
-    "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1200&q=80",
-    "https://images.unsplash.com/photo-1454496522488-7a8e488e8606?auto=format&fit=crop&w=1200&q=80",
-    "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80"
-  ],
-  peaceful: [
-    "https://images.unsplash.com/photo-1475924156734-496f6cac6ec1?auto=format&fit=crop&w=1200&q=80",
-    "https://images.unsplash.com/photo-1439853949127-fa647821ebb0?auto=format&fit=crop&w=1200&q=80",
-    "https://images.unsplash.com/photo-1470252649378-9c29740c9fa8?auto=format&fit=crop&w=1200&q=80"
-  ],
-  inspired: [
-    "https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?auto=format&fit=crop&w=1200&q=80",
-    "https://images.unsplash.com/photo-1483347756197-71ef80e95f73?auto=format&fit=crop&w=1200&q=80",
-    "https://images.unsplash.com/photo-1518837695005-2083093ee35b?auto=format&fit=crop&w=1200&q=80"
-  ]
-};
+// Dynamic Unsplash Featured Image helper generating beautiful, unique landscapes matching each mood
+function getRandomBg(mood) {
+  const keywordMap = {
+    hopeful: "sunrise,mist,redwoods",
+    determined: "mountains,cliff,peaks",
+    peaceful: "lake,stars,twilight",
+    inspired: "campfire,forest,milkyway"
+  };
+  const keywords = keywordMap[mood] || "nature,landscape";
+  const uniqueId = Math.floor(Math.random() * 1000000);
+  return `https://images.unsplash.com/featured/1200x800/?${keywords}&sig=${uniqueId}`;
+}
 
 // Global App State
 let sparks = [];
@@ -108,18 +97,24 @@ const bgLayer2 = document.getElementById('bg-layer-2');
 const micBtn = document.getElementById('mic-btn');
 const moodSelector = document.getElementById('mood-selector');
 
+// Search DOM Elements
+const searchToggleBtn = document.getElementById('search-toggle-btn');
+const localSearchContainer = document.getElementById('local-search-container');
+const localSearchInput = document.getElementById('local-search-input');
+
 // Modals & Overlays
 const dictationOverlay = document.getElementById('dictation-overlay');
 const modalSpinner = document.getElementById('modal-spinner');
 const modalStatus = document.getElementById('modal-status');
 const voiceContainer = document.getElementById('voice-transcription-container');
 const transcriptionText = document.getElementById('transcription-text');
+const searchEditedBtn = document.getElementById('search-edited-btn');
 const quoteOptionsContainer = document.getElementById('quote-options-container');
 const optionsScrollList = document.getElementById('options-scroll-list');
-const batchMoodSelect = document.getElementById('batch-mood-select');
 
 // Modal Actions
 const cancelDictation = document.getElementById('cancel-dictation');
+const doneSpeakingBtn = document.getElementById('done-speaking-btn');
 const tryAgainDictation = document.getElementById('try-again-dictation');
 const saveDictation = document.getElementById('save-dictation');
 
@@ -129,6 +124,8 @@ const settingsOverlay = document.getElementById('settings-overlay');
 const closeSettings = document.getElementById('close-settings');
 const saveSettings = document.getElementById('save-settings');
 const geminiKeyInput = document.getElementById('gemini-key-input');
+const aiTextQueryInput = document.getElementById('ai-text-query-input');
+const aiTextQueryBtn = document.getElementById('ai-text-query-btn');
 
 // Service Worker Registration for PWA Offline Support
 if ('serviceWorker' in navigator) {
@@ -221,8 +218,7 @@ function mergeSparks(local, cloud) {
 }
 
 async function addSpark(text, author, mood) {
-  const naturePool = NATURE_FALLBACKS[mood];
-  const randomBg = naturePool[Math.floor(Math.random() * naturePool.length)];
+  const randomBg = getRandomBg(mood);
   
   // Dynamically assign style classes based on the chosen positive feeling
   const moodStyles = {
@@ -262,16 +258,26 @@ async function addSpark(text, author, mood) {
 }
 
 // ----------------------------------------------------
-// UI RENDERING LAYER
+// UI RENDERING LAYER & KEYWORD SEARCH
 // ----------------------------------------------------
 function getFilteredSparks() {
-  return sparks.filter(spark => spark.mood === currentMood);
+  let pool = sparks.filter(spark => spark.mood === currentMood);
+  
+  // Filter by home screen keyword search input
+  const query = localSearchInput.value.trim().toLowerCase();
+  if (query) {
+    pool = pool.filter(spark => 
+      spark.text.toLowerCase().includes(query) || 
+      spark.author.toLowerCase().includes(query)
+    );
+  }
+  return pool;
 }
 
 function renderActiveSpark() {
   const pool = getFilteredSparks();
   if (pool.length === 0) {
-    quoteText.textContent = "No moments saved for this vibe yet. Tap the mic below to find some!";
+    quoteText.textContent = "No matching moments found. Try clearing your search or dictating new ones!";
     quoteAuthor.textContent = "";
     changeBackground("https://images.unsplash.com/photo-1475924156734-496f6cac6ec1?auto=format&fit=crop&w=1200&q=80");
     return;
@@ -283,7 +289,7 @@ function renderActiveSpark() {
 
   const spark = pool[currentSparkIndex];
 
-  quoteCard.classList.remove('fade-in');
+  // Smooth, instant opacity fade-out of the ENTIRE quote card
   quoteCard.style.opacity = 0;
   
   setTimeout(() => {
@@ -303,17 +309,14 @@ function renderActiveSpark() {
     const multiplier = isThinSerif ? 1.18 : 1.0; // Boost size by 18% for thinner delicate fonts
     
     if (length < 65) {
-      // Short quotes are large and bold
       quoteText.style.fontSize = `clamp(${1.8 * multiplier}rem, ${7.5 * multiplier}vw, ${2.5 * multiplier}rem)`;
     } else if (length < 130) {
-      // Medium quotes scale down slightly
       quoteText.style.fontSize = `clamp(${1.35 * multiplier}rem, ${5.5 * multiplier}vw, ${1.9 * multiplier}rem)`;
     } else {
-      // Very long quotes are scaled to fit perfectly on any phone screen
       quoteText.style.fontSize = `clamp(${1.1 * multiplier}rem, ${4.6 * multiplier}vw, ${1.5 * multiplier}rem)`;
     }
     
-    quoteCard.classList.add('fade-in');
+    // Smooth opacity fade-in
     quoteCard.style.opacity = 1;
     
     changeBackground(spark.bgUrl);
@@ -338,6 +341,23 @@ function updateActiveMoodButton() {
     btn.classList.toggle('active', btn.getAttribute('data-mood') === currentMood);
   });
 }
+
+// Local Search Input handlers
+searchToggleBtn.addEventListener('click', () => {
+  localSearchContainer.classList.toggle('hidden');
+  if (!localSearchContainer.classList.contains('hidden')) {
+    localSearchInput.focus();
+  } else {
+    localSearchInput.value = "";
+    currentSparkIndex = 0;
+    renderActiveSpark();
+  }
+});
+
+localSearchInput.addEventListener('input', () => {
+  currentSparkIndex = 0;
+  renderActiveSpark();
+});
 
 // Tap quote card to cycle quotes
 quoteCard.addEventListener('click', () => {
@@ -386,7 +406,6 @@ saveSettings.addEventListener('click', () => {
 async function queryAIQuotes(userQuery) {
   const apiKey = localStorage.getItem('spark_gemini_key');
   if (!apiKey) {
-    // If no key is set, fallback to polishing the user's spoken words as a single local option
     console.log("No Gemini API key found. Falling back to local cleaning mode.");
     return {
       quotes: [
@@ -400,9 +419,9 @@ async function queryAIQuotes(userQuery) {
 
   const API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent';
   const prompt = `You are an elite, highly insightful quote curator and literary expert.
-The user spoke or dictated a query describing a specific theme, scene, book, or character.
+The user spoke or typed a query describing a specific theme, scene, book, or character.
 
-User voice query: "${userQuery}"
+User query: "${userQuery}"
 
 INSTRUCTIONS:
 1. Find up to 5 real, powerful, and deeply inspirational quotes that perfectly match the user's query.
@@ -448,25 +467,28 @@ Do NOT include any markdown code blocks, backticks, or explanation outside the J
 // MULTI-QUOTE DICTATION INTERACTION FLOW
 // ----------------------------------------------------
 let recognition = null;
-let activeQueryText = '';
 
 if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
   const SpeechGen = window.SpeechRecognition || window.webkitSpeechRecognition;
   recognition = new SpeechGen();
-  recognition.continuous = false;
+  
+  // Continuous = true ensures the mic doesn't cut off when the user pauses!
+  recognition.continuous = true;
   recognition.interimResults = true;
   recognition.lang = 'en-US';
 
   recognition.onstart = () => {
     micBtn.classList.add('listening');
-    transcriptionText.textContent = "";
-    modalStatus.textContent = "Listening...";
+    transcriptionText.value = "";
+    modalStatus.textContent = "Listening... Tap 'Done' when finished speaking.";
     modalSpinner.classList.remove('hidden');
     voiceContainer.classList.remove('hidden');
+    searchEditedBtn.classList.add('hidden');
     quoteOptionsContainer.classList.add('hidden');
     
     // Action buttons initial state
     cancelDictation.classList.remove('hidden');
+    doneSpeakingBtn.classList.remove('hidden');
     tryAgainDictation.classList.add('hidden');
     saveDictation.classList.add('hidden');
     
@@ -486,21 +508,18 @@ if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
     }
 
     const currentText = finalTranscription || interimTranscription;
-    transcriptionText.textContent = currentText ? `“${currentText}”` : "";
-    
-    if (finalTranscription) {
-      activeQueryText = finalTranscription.trim();
-      processSpokenQuery();
+    if (currentText) {
+      transcriptionText.value = currentText;
+      // Show manual search button in case they stop talking but want to edit
+      searchEditedBtn.classList.remove('hidden');
     }
   };
 
   recognition.onerror = (event) => {
     console.error('Speech recognition error:', event.error);
-    modalStatus.textContent = "Microphone error. Try again.";
-    setTimeout(() => {
-      dictationOverlay.classList.add('hidden');
-      micBtn.classList.remove('listening');
-    }, 2000);
+    modalStatus.textContent = "Microphone error. Try editing and searching.";
+    modalSpinner.classList.add('hidden');
+    searchEditedBtn.classList.remove('hidden');
   };
 
   recognition.onend = () => {
@@ -508,13 +527,14 @@ if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
   };
 }
 
-// Phase 2: Contact Gemini and Render candidates with Checkboxes
-async function processSpokenQuery() {
+// Phase 2: Contact Gemini and Render candidates with Checkboxes and Individual Mood selectors
+async function processSpokenQuery(queryText) {
   modalStatus.textContent = "Searching online book quote archive...";
   voiceContainer.classList.add('hidden');
+  doneSpeakingBtn.classList.add('hidden');
   
   try {
-    const data = await queryAIQuotes(activeQueryText);
+    const data = await queryAIQuotes(queryText);
     retrievedCandidates = data.quotes || [];
     
     if (retrievedCandidates.length === 0) {
@@ -523,9 +543,6 @@ async function processSpokenQuery() {
       tryAgainDictation.classList.remove('hidden');
       return;
     }
-
-    // Load active mood default in selector
-    batchMoodSelect.value = currentMood;
     
     // Clear spinner
     modalSpinner.classList.add('hidden');
@@ -545,10 +562,30 @@ async function processSpokenQuery() {
         <div class="card-content">
           <p class="option-text">“${item.text}”</p>
           <p class="option-author">${item.author}</p>
+          <!-- Individual Card Specific Mood Tagging Dropdown -->
+          <select class="card-mood-select">
+            <option value="hopeful">☀️ Hopeful</option>
+            <option value="determined">🛡️ Determined</option>
+            <option value="peaceful">🪶 Peaceful</option>
+            <option value="inspired">🔥 Inspired</option>
+          </select>
         </div>
       `;
       
-      card.addEventListener('click', () => toggleOptionSelection(card));
+      // Default to active screen mood
+      const select = card.querySelector('.card-mood-select');
+      select.value = currentMood;
+      
+      // Stop event propagation so clicking select doesn't toggle checkbox!
+      select.addEventListener('click', (e) => {
+        e.stopPropagation();
+      });
+      
+      card.addEventListener('click', (e) => {
+        if (e.target.closest('.card-mood-select')) return;
+        toggleOptionSelection(card);
+      });
+      
       optionsScrollList.appendChild(card);
     });
 
@@ -577,13 +614,35 @@ function updateSaveButtonCount() {
   saveDictation.classList.toggle('hidden', selectedCount === 0);
 }
 
-// Actions
+// Microphones Action Click
 micBtn.addEventListener('click', () => {
   if (!recognition) {
     alert("Speech recognition is not supported on this browser. Try Chrome or Safari.");
     return;
   }
   recognition.start();
+});
+
+// Done Speaking stops mic and queries AI
+doneSpeakingBtn.addEventListener('click', () => {
+  if (recognition) {
+    recognition.stop();
+  }
+  const text = transcriptionText.value.trim();
+  if (text.length > 2) {
+    processSpokenQuery(text);
+  }
+});
+
+// Search edited manually triggers query
+searchEditedBtn.addEventListener('click', () => {
+  if (recognition) {
+    recognition.stop();
+  }
+  const text = transcriptionText.value.trim();
+  if (text.length > 2) {
+    processSpokenQuery(text);
+  }
 });
 
 cancelDictation.addEventListener('click', () => {
@@ -603,26 +662,60 @@ tryAgainDictation.addEventListener('click', () => {
   }, 350);
 });
 
-// Batch Save Selected Sparks
+// Batch Save Selected Sparks with Card-Specific Moods
 saveDictation.addEventListener('click', async () => {
   const selectedCards = document.querySelectorAll('.quote-option-card.selected');
-  const targetMood = batchMoodSelect.value;
-  
   if (selectedCards.length === 0) return;
+
+  let lastSavedMood = currentMood;
 
   for (let card of selectedCards) {
     const idx = parseInt(card.getAttribute('data-index'), 10);
     const item = retrievedCandidates[idx];
-    await addSpark(item.text, item.author, targetMood);
+    const cardMood = card.querySelector('.card-mood-select').value;
+    
+    await addSpark(item.text, item.author, cardMood);
+    lastSavedMood = cardMood;
   }
 
   dictationOverlay.classList.add('hidden');
   
   // Immediately pivot to the saved feeling and load the first newly added quote
-  currentMood = targetMood;
+  currentMood = lastSavedMood;
   currentSparkIndex = 0;
   updateActiveMoodButton();
   renderActiveSpark();
+});
+
+// ----------------------------------------------------
+// SETTINGS DYNAMIC TEXT-BASED AI SEARCH
+// ----------------------------------------------------
+aiTextQueryBtn.addEventListener('click', () => {
+  const query = aiTextQueryInput.value.trim();
+  if (query.length < 3) {
+    alert("Please enter a longer search prompt.");
+    return;
+  }
+
+  // Close Settings modal
+  settingsOverlay.classList.add('hidden');
+  
+  // Open dictation modal, display spinner, run query
+  dictationOverlay.classList.remove('hidden');
+  modalStatus.textContent = "Searching book quotes archive...";
+  modalSpinner.classList.remove('hidden');
+  voiceContainer.classList.add('hidden');
+  quoteOptionsContainer.classList.add('hidden');
+  
+  cancelDictation.classList.remove('hidden');
+  doneSpeakingBtn.classList.add('hidden');
+  tryAgainDictation.classList.add('hidden');
+  saveDictation.classList.add('hidden');
+  
+  processSpokenQuery(query);
+  
+  // Clear settings input
+  aiTextQueryInput.value = "";
 });
 
 // Initialize on Load
