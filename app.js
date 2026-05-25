@@ -537,7 +537,7 @@ async function queryAIQuotes(userQuery) {
     };
   }
 
-  const API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent';
+  const API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
   const prompt = `You are an elite, highly insightful quote curator, literary expert, and general wisdom archivist.
 The user spoke or typed their query: "${userQuery}".
 
@@ -578,11 +578,26 @@ Do NOT include any markdown code blocks, backticks, or explanation outside the J
   });
 
   if (!response.ok) {
-    throw new Error(`HTTP Error ${response.status}`);
+    let errorDetail = `HTTP Error ${response.status}`;
+    try {
+      const errJson = await response.json();
+      if (errJson && errJson.error && errJson.error.message) {
+        errorDetail = errJson.error.message;
+      }
+    } catch (e) {}
+    throw new Error(errorDetail);
   }
 
   const result = await response.json();
-  const rawText = result.candidates[0].content.parts[0].text;
+  if (!result.candidates || !result.candidates[0] || !result.candidates[0].content) {
+    throw new Error("Invalid API response format");
+  }
+  let rawText = result.candidates[0].content.parts[0].text.trim();
+  
+  // Clean markdown wrapping if AI Studio ignores the mimeType parameter
+  if (rawText.startsWith("```")) {
+    rawText = rawText.replace(/^```json/, '').replace(/^```/, '').replace(/```$/, '').trim();
+  }
   return JSON.parse(rawText);
 }
 
@@ -740,7 +755,11 @@ async function processSpokenQuery(queryText) {
     
   } catch (error) {
     console.error("Gemini Query Failed", error);
-    modalStatus.textContent = "AI Search failed. Check API Key or Internet.";
+    let userMsg = error.message;
+    if (userMsg === "Failed to fetch") {
+      userMsg = "Internet connection lost or request blocked";
+    }
+    modalStatus.textContent = `AI Search failed: ${userMsg}. Check API Key or Internet.`;
     modalSpinner.classList.add('hidden');
     tryAgainDictation.classList.remove('hidden');
   }
