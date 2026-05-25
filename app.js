@@ -640,8 +640,17 @@ async function processSpokenQuery(queryText) {
     const data = await queryAIQuotes(queryText);
     retrievedCandidates = data.quotes || [];
     
+    // De-duplicate: Omit quotes that are already saved in your bank
+    const freshCandidates = retrievedCandidates.filter(item => {
+      const normalize = (str) => str.toLowerCase().replace(/[^a-z0-9]/g, '');
+      const candidateNorm = normalize(item.text);
+      return !sparks.some(savedSpark => normalize(savedSpark.text) === candidateNorm);
+    });
+    
+    retrievedCandidates = freshCandidates;
+    
     if (retrievedCandidates.length === 0) {
-      modalStatus.textContent = "No matches found.";
+      modalStatus.textContent = "All found sparks are already in your memory bank!";
       modalSpinner.classList.add('hidden');
       tryAgainDictation.classList.remove('hidden');
       return;
