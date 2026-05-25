@@ -434,16 +434,17 @@ async function queryAIQuotes(userQuery) {
 
   const API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent';
   const prompt = `You are an elite, highly insightful quote curator and literary expert.
-The user spoke or typed a query describing a specific theme, scene, book, or character.
+The user spoke their query using Web Speech-to-Text. It is highly likely to contain phonetic mishearings, typos, or garbled fantasy/philosophical terms (e.g., 'calendar' or 'calladin' instead of 'Kaladin', 'wit' or 'white' instead of 'Wit', 'oath bringer' instead of 'Oathbringer', 'words of radiance' instead of 'Words of Radiance', 'marcus' instead of 'Marcus Aurelius').
 
 User query: "${userQuery}"
 
 INSTRUCTIONS:
-1. Find up to 5 real, powerful, and deeply inspirational quotes that perfectly match the user's query.
-2. Ensure the quotes are real, verbatim from literature (like fantasy books, classic stories, philosophy) or historical contexts.
-3. For each quote, identify the exact speaker/author and the source book (e.g. "Wit — Oathbringer by Brandon Sanderson" or "Marcus Aurelius — Meditations").
-4. If the query is highly personal or cannot be matched to literature, do not fail. Instead, write 2 or 3 beautifully polished, inspiring, poetic variations of the user's words as quotes, credited to "Personal Reflection".
-5. Output must be strictly valid JSON according to this schema:
+1. Reconstruct the user's intended query by analyzing phonetic sounds and context (e.g., if they said "wit failures", they meant Wit's quotes on failure).
+2. Find up to 5 real, powerful, and deeply inspirational quotes that perfectly match the reconstructed query.
+3. Ensure the quotes are real, verbatim from literature (like fantasy books, classic stories, philosophy) or historical contexts.
+4. For each quote, identify the exact speaker/author and the source book (e.g., "Wit — Oathbringer by Brandon Sanderson" or "Marcus Aurelius — Meditations").
+5. If the query is highly personal or cannot be matched to literature, do not fail. Instead, write 2 or 3 beautifully polished, inspiring, poetic variations of the user's words as quotes, credited to "Personal Reflection".
+6. Output must be strictly valid JSON according to this schema:
     {
       "quotes": [
         {
