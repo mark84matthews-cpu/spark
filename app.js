@@ -5,6 +5,7 @@ const DEFAULT_SPARKS = [
     text: "I promise you, Kaladin: You will be warm again.",
     author: "Wit — Oathbringer",
     mood: "hopeful",
+    styleClass: "style-gold-cormorant",
     bgUrl: "https://images.unsplash.com/photo-1502082553048-f009c37129b9?auto=format&fit=crop&w=1200&q=80" // Misty redwoods morning sun
   },
   {
@@ -12,6 +13,7 @@ const DEFAULT_SPARKS = [
     text: "You are not worse for your association with the world, but it is better for its association with you.",
     author: "Wit — Oathbringer",
     mood: "hopeful",
+    styleClass: "style-serene-lexend",
     bgUrl: "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=1200&q=80" // Golden sun rays green hills
   },
   {
@@ -19,6 +21,7 @@ const DEFAULT_SPARKS = [
     text: "The longer you live, the more you fail. Failure is the mark of a life well lived. In turn, the only way to live without failure is to be of no use to anyone.",
     author: "Wit — Words of Radiance",
     mood: "determined",
+    styleClass: "style-starlight-cinzel",
     bgUrl: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1200&q=80" // Giant jagged mountain peaks
   },
   {
@@ -26,6 +29,7 @@ const DEFAULT_SPARKS = [
     text: "I’ve decided that I don’t like the word 'impossible'. It has too many syllables. 'Unlikely' is much better. It sounds like a challenge.",
     author: "Wit — The Way of Kings",
     mood: "determined",
+    styleClass: "style-neon-syne",
     bgUrl: "https://images.unsplash.com/photo-1454496522488-7a8e488e8606?auto=format&fit=crop&w=1200&q=80" // Snowy mountain peak blue sky
   },
   {
@@ -33,6 +37,7 @@ const DEFAULT_SPARKS = [
     text: "Accept the pain, but don't accept that you deserved it.",
     author: "Wit — Oathbringer",
     mood: "peaceful",
+    styleClass: "style-serene-lexend",
     bgUrl: "https://images.unsplash.com/photo-1475924156734-496f6cac6ec1?auto=format&fit=crop&w=1200&q=80" // Lavender violet sunset field
   },
   {
@@ -40,6 +45,7 @@ const DEFAULT_SPARKS = [
     text: "Sometimes a story is just a story. But other times, it is a key. A key to a door you didn't even know was locked.",
     author: "Wit — Oathbringer",
     mood: "peaceful",
+    styleClass: "style-warm-lora",
     bgUrl: "https://images.unsplash.com/photo-1439853949127-fa647821ebb0?auto=format&fit=crop&w=1200&q=80" // Alpine starry twilight mirror lake
   },
   {
@@ -47,6 +53,7 @@ const DEFAULT_SPARKS = [
     text: "The purpose of a storyteller is not to tell you how to think, but to give you questions to think upon.",
     author: "Wit — The Way of Kings",
     mood: "inspired",
+    styleClass: "style-warm-lora",
     bgUrl: "https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?auto=format&fit=crop&w=1200&q=80" // Crackling campfire under starry sky
   },
   {
@@ -54,6 +61,7 @@ const DEFAULT_SPARKS = [
     text: "All great art is hated. It is difficult to make something nobody hates; it is easy to make something nobody loves.",
     author: "Wit — Words of Radiance",
     mood: "inspired",
+    styleClass: "style-gold-cormorant",
     bgUrl: "https://images.unsplash.com/photo-1483347756197-71ef80e95f73?auto=format&fit=crop&w=1200&q=80" // Aurora borealis mountains
   }
 ];
@@ -138,6 +146,32 @@ function initDatabase() {
   const localData = localStorage.getItem('spark_memory_bank');
   if (localData) {
     sparks = JSON.parse(localData);
+    
+    // Proactive Database Self-Healing: assign style classes to old saved quotes instantly
+    let databaseUpgraded = false;
+    sparks = sparks.map(spark => {
+      if (!spark.styleClass) {
+        databaseUpgraded = true;
+        const defaultMatch = DEFAULT_SPARKS.find(d => d.id === spark.id);
+        if (defaultMatch) {
+          spark.styleClass = defaultMatch.styleClass;
+        } else {
+          const moodStyles = {
+            hopeful: ['style-gold-cormorant', 'style-serene-lexend'],
+            determined: ['style-starlight-cinzel', 'style-neon-syne'],
+            peaceful: ['style-serene-lexend', 'style-warm-lora'],
+            inspired: ['style-warm-lora', 'style-neon-syne']
+          };
+          const pool = moodStyles[spark.mood] || ['style-serene-lexend'];
+          spark.styleClass = pool[Math.floor(Math.random() * pool.length)];
+        }
+      }
+      return spark;
+    });
+    
+    if (databaseUpgraded) {
+      saveToLocalStorage();
+    }
   } else {
     sparks = [...DEFAULT_SPARKS];
     saveToLocalStorage();
@@ -190,11 +224,22 @@ async function addSpark(text, author, mood) {
   const naturePool = NATURE_FALLBACKS[mood];
   const randomBg = naturePool[Math.floor(Math.random() * naturePool.length)];
   
+  // Dynamically assign style classes based on the chosen positive feeling
+  const moodStyles = {
+    hopeful: ['style-gold-cormorant', 'style-serene-lexend'],
+    determined: ['style-starlight-cinzel', 'style-neon-syne'],
+    peaceful: ['style-serene-lexend', 'style-warm-lora'],
+    inspired: ['style-warm-lora', 'style-neon-syne']
+  };
+  const stylesPool = moodStyles[mood] || ['style-serene-lexend'];
+  const randomStyle = stylesPool[Math.floor(Math.random() * stylesPool.length)];
+
   const newSpark = {
     id: 'user-' + Date.now() + Math.random().toString(36).substring(2, 7),
     text: text,
     author: author || "Moments of Reflection",
     mood: mood,
+    styleClass: randomStyle,
     bgUrl: randomBg
   };
 
@@ -207,6 +252,7 @@ async function addSpark(text, author, mood) {
         text: newSpark.text,
         author: newSpark.author,
         mood: newSpark.mood,
+        styleClass: newSpark.styleClass,
         bgUrl: newSpark.bgUrl
       });
     } catch (e) {
@@ -243,6 +289,13 @@ function renderActiveSpark() {
   setTimeout(() => {
     quoteText.textContent = spark.text;
     quoteAuthor.textContent = spark.author;
+    
+    // Reset previous style classes
+    quoteText.className = "";
+    
+    // Apply this quote's unique visual masterpiece style class
+    const styleClass = spark.styleClass || "style-serene-lexend";
+    quoteText.classList.add(styleClass);
     
     // Dynamic Font-Sizing based on Quote Length (Dyslexia-Friendly Layout Scaling)
     const length = spark.text.length;

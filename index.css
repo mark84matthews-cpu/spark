@@ -72,19 +72,14 @@ html, body {
   padding: 0 20px; /* Safe padding prevents left/right edge touching */
 }
 
-/* Breathing Glowing Quote Text */
+/* Base Quote Text Layout Structure */
 #quote-text {
-  font-family: 'Lexend', -apple-system, sans-serif;
-  font-size: clamp(1.4rem, 6.2vw, 2.1rem); /* Dynamic scaling prevents overflow */
-  font-weight: 500; /* Thicker strokes increase dyslexic legibility */
+  font-size: clamp(1.4rem, 6.2vw, 2.1rem); /* Responsive fluid sizing */
   line-height: 1.45;
-  color: #ffffff;
   margin-bottom: 18px;
   letter-spacing: -0.2px;
-  animation: breatheGlow 8s ease-in-out infinite;
   user-select: none;
-  /* Dual layer shadow: solid dark drop-shadow for contrast + extremely rich warm gold glows */
-  text-shadow: 0 2px 8px rgba(5, 5, 8, 0.95), 0 0 20px rgba(255, 230, 153, 0.7), 0 0 35px rgba(255, 230, 153, 0.4), 0 0 55px rgba(255, 183, 3, 0.25);
+  transition: all 0.5s ease-in-out;
 }
 
 /* Quote Author Metadata */
@@ -96,18 +91,105 @@ html, body {
   letter-spacing: 2.5px;
   color: #ffe699;
   opacity: 0.85;
-  text-shadow: 0 2px 6px rgba(5, 5, 8, 0.9);
+  text-shadow: 0 2px 6px rgba(5, 5, 8, 0.95);
   margin-top: 5px;
 }
 
-/* Breathing Glow Animation */
-@keyframes breatheGlow {
+/* ----------------------------------------------------
+   THE FIVE MASTERPIECE STYLE CLASSES
+   ---------------------------------------------------- */
+
+/* Style 1: Cormorant Gold (Classical, Poetic) */
+.style-gold-cormorant {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-style: italic;
+  font-weight: 500;
+  color: #ffffff;
+  animation: goldBreathe 8s ease-in-out infinite;
+}
+@keyframes goldBreathe {
   0%, 100% {
-    text-shadow: 0 2px 8px rgba(5, 5, 8, 0.95), 0 0 20px rgba(255, 230, 153, 0.7), 0 0 35px rgba(255, 230, 153, 0.4), 0 0 55px rgba(255, 183, 3, 0.25);
+    text-shadow: 0 2px 8px rgba(5, 5, 8, 0.95), 0 0 15px rgba(255, 230, 153, 0.55), 0 0 25px rgba(255, 230, 153, 0.25);
     transform: scale(1);
   }
   50% {
-    text-shadow: 0 2px 10px rgba(5, 5, 8, 0.95), 0 0 32px rgba(255, 230, 153, 0.9), 0 0 50px rgba(255, 230, 153, 0.6), 0 0 75px rgba(255, 183, 3, 0.4);
+    text-shadow: 0 2px 10px rgba(5, 5, 8, 0.95), 0 0 26px rgba(255, 230, 153, 0.75), 0 0 42px rgba(255, 230, 153, 0.4);
+    transform: scale(1.012);
+  }
+}
+
+/* Style 2: Cinzel Starlight (Epic, Rigid Legend) */
+.style-starlight-cinzel {
+  font-family: 'Cinzel', Times, serif;
+  font-weight: 600;
+  letter-spacing: 1px;
+  color: #f2f5ff;
+  animation: starlightBreathe 8s ease-in-out infinite;
+}
+@keyframes starlightBreathe {
+  0%, 100% {
+    text-shadow: 0 2px 8px rgba(5, 5, 8, 0.95), 0 0 16px rgba(0, 229, 255, 0.5), 0 0 28px rgba(0, 229, 255, 0.2);
+    transform: scale(1);
+  }
+  50% {
+    text-shadow: 0 2px 12px rgba(5, 5, 8, 0.95), 0 0 28px rgba(0, 229, 255, 0.75), 0 0 48px rgba(0, 229, 255, 0.35);
+    transform: scale(1.012);
+  }
+}
+
+/* Style 3: Syne Neon (Modern, High-Energy Art) */
+.style-neon-syne {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #ffffff;
+  animation: neonBreathe 7s ease-in-out infinite;
+}
+@keyframes neonBreathe {
+  0%, 100% {
+    text-shadow: 0 2px 8px rgba(5, 5, 8, 0.95), 0 0 18px rgba(255, 82, 82, 0.6), 0 0 30px rgba(255, 82, 82, 0.25);
+    transform: scale(1);
+  }
+  50% {
+    text-shadow: 0 2px 10px rgba(5, 5, 8, 0.95), 0 0 30px rgba(255, 82, 82, 0.85), 0 0 50px rgba(255, 82, 82, 0.45);
+    transform: scale(1.012);
+  }
+}
+
+/* Style 4: Serene Lexend (Clean, Soothing Dyslexia Focus) */
+.style-serene-lexend {
+  font-family: 'Lexend', -apple-system, sans-serif;
+  font-weight: 500;
+  color: #ffffff;
+  animation: sereneBreathe 9s ease-in-out infinite;
+}
+@keyframes sereneBreathe {
+  0%, 100% {
+    text-shadow: 0 2px 8px rgba(5, 5, 8, 0.95), 0 0 16px rgba(214, 180, 252, 0.5), 0 0 28px rgba(214, 180, 252, 0.2);
+    transform: scale(1);
+  }
+  50% {
+    text-shadow: 0 2px 10px rgba(5, 5, 8, 0.95), 0 0 28px rgba(214, 180, 252, 0.75), 0 0 45px rgba(214, 180, 252, 0.35);
+    transform: scale(1.012);
+  }
+}
+
+/* Style 5: Warm Lora (Cozy Campfire, Reflection) */
+.style-warm-lora {
+  font-family: 'Lora', Georgia, serif;
+  font-style: italic;
+  font-weight: 500;
+  color: #fffaf0;
+  animation: warmBreathe 8s ease-in-out infinite;
+}
+@keyframes warmBreathe {
+  0%, 100% {
+    text-shadow: 0 2px 8px rgba(5, 5, 8, 0.95), 0 0 15px rgba(251, 133, 0, 0.5), 0 0 25px rgba(251, 133, 0, 0.2);
+    transform: scale(1);
+  }
+  50% {
+    text-shadow: 0 2px 10px rgba(5, 5, 8, 0.95), 0 0 26px rgba(251, 133, 0, 0.75), 0 0 42px rgba(251, 133, 0, 0.35);
     transform: scale(1.012);
   }
 }
