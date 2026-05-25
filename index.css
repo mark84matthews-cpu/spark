@@ -74,12 +74,12 @@ html, body {
 
 /* Base Quote Text Layout Structure */
 #quote-text {
-  font-size: clamp(1.4rem, 6.2vw, 2.1rem); /* Responsive fluid sizing */
   line-height: 1.45;
   margin-bottom: 18px;
   letter-spacing: -0.2px;
   user-select: none;
-  transition: all 0.5s ease-in-out;
+  /* Animate only opacity and text-shadow (glow) to prevent jarring font-resizing animations */
+  transition: opacity 0.4s ease, text-shadow 0.6s ease;
 }
 
 /* Quote Author Metadata */
