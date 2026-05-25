@@ -480,7 +480,7 @@ if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
   recognition.onstart = () => {
     micBtn.classList.add('listening');
     transcriptionText.value = "";
-    modalStatus.textContent = "Listening... Tap 'Done' when finished speaking.";
+    modalStatus.textContent = "Listening... Tap 'Done Speaking' to pause and edit.";
     modalSpinner.classList.remove('hidden');
     voiceContainer.classList.remove('hidden');
     searchEditedBtn.classList.add('hidden');
@@ -510,20 +510,24 @@ if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
     const currentText = finalTranscription || interimTranscription;
     if (currentText) {
       transcriptionText.value = currentText;
-      // Show manual search button in case they stop talking but want to edit
-      searchEditedBtn.classList.remove('hidden');
     }
   };
 
   recognition.onerror = (event) => {
     console.error('Speech recognition error:', event.error);
-    modalStatus.textContent = "Microphone error. Try editing and searching.";
+    modalStatus.textContent = "Microphone error. You can type your search below.";
     modalSpinner.classList.add('hidden');
     searchEditedBtn.classList.remove('hidden');
   };
 
   recognition.onend = () => {
     micBtn.classList.remove('listening');
+    modalSpinner.classList.add('hidden');
+    modalStatus.textContent = "Review your prompt. Edit spelling, then tap Find Book Quotes.";
+    
+    doneSpeakingBtn.classList.add('hidden');
+    searchEditedBtn.classList.remove('hidden');
+    tryAgainDictation.classList.remove('hidden');
   };
 }
 
@@ -623,25 +627,27 @@ micBtn.addEventListener('click', () => {
   recognition.start();
 });
 
-// Done Speaking stops mic and queries AI
+// Done Speaking simply stops mic to allow editing (does NOT search automatically)
 doneSpeakingBtn.addEventListener('click', () => {
   if (recognition) {
     recognition.stop();
   }
-  const text = transcriptionText.value.trim();
-  if (text.length > 2) {
-    processSpokenQuery(text);
-  }
 });
 
-// Search edited manually triggers query
+// Search edited triggers query (shows spinner loader first)
 searchEditedBtn.addEventListener('click', () => {
   if (recognition) {
     recognition.stop();
   }
   const text = transcriptionText.value.trim();
   if (text.length > 2) {
+    modalSpinner.classList.remove('hidden');
+    modalStatus.textContent = "Searching book quotes archive...";
+    searchEditedBtn.classList.add('hidden');
+    tryAgainDictation.classList.add('hidden');
     processSpokenQuery(text);
+  } else {
+    alert("Please speak or type a longer search query.");
   }
 });
 
