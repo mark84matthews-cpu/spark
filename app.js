@@ -518,14 +518,14 @@ INSTRUCTIONS:
 2. Find up to 5 real, powerful, and deeply inspirational quotes, general wisdom statements, or rich literary extracts/passages matching the query.
 3. Broaden your search to allow ANY topic:
    - General quotes & wisdom (e.g., "inspiring quotes", stoic philosophy, or even playful/quirky queries like "quotes about a tomato").
-   - Deep literary extracts: If they search for a book, character, or story theme, feel free to return a rich, powerful paragraph or passage (up to 3-4 sentences) that fully captures the scene/moment rather than just a single short sentence.
+   - Deep literary extracts: If they search for a book, character, theme, or story, or if their search query contains words like "extract", "passage", "scene", "paragraph", or "story", you MUST return a rich, powerful multi-sentence passage or paragraph (between 3 to 5 sentences long) that fully captures the context, scene, or dialogue, rather than just a single-sentence quote! This is extremely important to give deep, immersive context to the user.
 4. For each quote/extract, identify the exact speaker/author and source context (e.g., "Wit — Oathbringer by Brandon Sanderson" or "Marcus Aurelius — Meditations" or "General Wisdom" or "Playful Reflection").
 5. If the query is highly personal or cannot be matched to literature, do not fail. Instead, write 2 or 3 beautifully polished, inspiring, poetic variations of the user's words as quotes, credited to "Personal Reflection".
 6. Output must be strictly valid JSON according to this schema:
     {
       "quotes": [
         {
-          "text": "The exact quote verbatim or rich literary extract (up to 3-4 sentences)",
+          "text": "The exact quote verbatim, general wisdom statement, or rich multi-sentence literary extract (up to 3-5 sentences long)",
           "author": "Character/Author — Book Title/Source"
         }
       ]
@@ -611,6 +611,7 @@ if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
     console.error('Speech recognition error:', event.error);
     modalStatus.textContent = "Microphone error. You can type your search below.";
     modalSpinner.classList.add('hidden');
+    searchEditedBtn.classList.add('full-width');
     searchEditedBtn.classList.remove('hidden');
     savePersonalQuoteBtn.classList.remove('hidden');
   };
@@ -618,9 +619,10 @@ if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
   recognition.onend = () => {
     micBtn.classList.remove('listening');
     modalSpinner.classList.add('hidden');
-    modalStatus.textContent = "Review your prompt. Edit spelling, then tap Find Book Quotes.";
+    modalStatus.textContent = "Review your prompt. Edit spelling, then tap Search.";
     
     doneSpeakingBtn.classList.add('hidden');
+    searchEditedBtn.classList.add('full-width');
     searchEditedBtn.classList.remove('hidden');
     savePersonalQuoteBtn.classList.remove('hidden');
     tryAgainDictation.classList.remove('hidden');
@@ -653,7 +655,7 @@ async function processSpokenQuery(queryText) {
     optionsScrollList.innerHTML = "";
     retrievedCandidates.forEach((item, index) => {
       const card = document.createElement('div');
-      card.className = "quote-option-card selected"; // Checked by default
+      card.className = "quote-option-card"; // Unchecked by default!
       card.setAttribute('data-index', index);
       
       card.innerHTML = `
@@ -692,6 +694,7 @@ async function processSpokenQuery(queryText) {
 
     quoteOptionsContainer.classList.remove('hidden');
     tryAgainDictation.classList.remove('hidden');
+    saveDictation.classList.add('full-width');
     saveDictation.classList.remove('hidden');
     
     updateSaveButtonCount();

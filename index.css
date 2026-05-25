@@ -460,21 +460,27 @@ html, body {
 .modal-actions {
   display: flex;
   width: 100%;
-  gap: 12px;
+  gap: 8px;
   margin-top: 6px;
+  flex-wrap: wrap; /* allow wrapping on small mobile screens */
 }
 
 .modal-btn {
-  flex: 1;
+  flex: 1 1 calc(50% - 4px); /* standard two buttons per row */
   border: none;
   font-family: 'Outfit', sans-serif;
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   font-weight: 500;
-  padding: 10px 16px;
+  padding: 10px 14px;
   border-radius: 12px;
   cursor: pointer;
   outline: none;
   transition: all 0.2s ease;
+  text-align: center;
+}
+
+.modal-btn.full-width {
+  flex: 1 1 100% !important; /* expand to occupy the entire row */
 }
 
 .modal-btn.primary {
