@@ -244,6 +244,19 @@ function renderActiveSpark() {
     quoteText.textContent = spark.text;
     quoteAuthor.textContent = spark.author;
     
+    // Dynamic Font-Sizing based on Quote Length (Dyslexia-Friendly Layout Scaling)
+    const length = spark.text.length;
+    if (length < 65) {
+      // Short quotes are large and bold
+      quoteText.style.fontSize = "clamp(1.7rem, 7vw, 2.4rem)";
+    } else if (length < 130) {
+      // Medium quotes scale down slightly
+      quoteText.style.fontSize = "clamp(1.3rem, 5.2vw, 1.85rem)";
+    } else {
+      // Very long quotes are scaled to fit perfectly on any phone screen
+      quoteText.style.fontSize = "clamp(1.05rem, 4.4vw, 1.45rem)";
+    }
+    
     quoteCard.classList.add('fade-in');
     quoteCard.style.opacity = 1;
     
