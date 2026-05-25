@@ -85,14 +85,15 @@ html, body {
 /* Quote Author Metadata */
 #quote-author {
   font-family: 'Outfit', sans-serif;
-  font-size: 0.82rem;
-  font-weight: 400;
+  font-size: clamp(0.78rem, 3.2vw, 0.95rem); /* Scaled up for crisp readability */
+  font-weight: 600; /* Solid bold lettering */
   text-transform: uppercase;
-  letter-spacing: 2.5px;
-  color: #ffe699;
-  opacity: 0.85;
-  text-shadow: 0 2px 6px rgba(5, 5, 8, 0.95);
-  margin-top: 5px;
+  letter-spacing: 1.5px; /* Close letter-spacing is proven easier to read */
+  color: #ffe699; /* Clear, bright gold */
+  opacity: 1.0; /* 100% solid contrast, no faint transparency */
+  /* Intense layered dark drop-shadow guarantees it stands out clearly over dynamic landscapes */
+  text-shadow: 0 2px 10px rgba(5, 5, 8, 1.0), 0 0 15px rgba(5, 5, 8, 0.95), 0 0 25px rgba(5, 5, 8, 0.85);
+  margin-top: 8px;
 }
 
 /* ----------------------------------------------------
@@ -102,18 +103,18 @@ html, body {
 /* Style 1: Cormorant Gold (Classical, Poetic) */
 .style-gold-cormorant {
   font-family: 'Cormorant Garamond', Georgia, serif;
-  font-style: italic;
-  font-weight: 500;
+  font-weight: 650; /* Significantly thicker weight for legible thin terminals */
   color: #ffffff;
   animation: goldBreathe 8s ease-in-out infinite;
 }
 @keyframes goldBreathe {
   0%, 100% {
-    text-shadow: 0 2px 8px rgba(5, 5, 8, 0.95), 0 0 15px rgba(255, 230, 153, 0.55), 0 0 25px rgba(255, 230, 153, 0.25);
+    /* Layered deep outlines for contrast + glowing background aura */
+    text-shadow: 0 2px 8px rgba(5, 5, 8, 1.0), 0 0 22px rgba(255, 230, 153, 0.75), 0 0 35px rgba(255, 230, 153, 0.45);
     transform: scale(1);
   }
   50% {
-    text-shadow: 0 2px 10px rgba(5, 5, 8, 0.95), 0 0 26px rgba(255, 230, 153, 0.75), 0 0 42px rgba(255, 230, 153, 0.4);
+    text-shadow: 0 2px 10px rgba(5, 5, 8, 1.0), 0 0 36px rgba(255, 230, 153, 0.95), 0 0 55px rgba(255, 230, 153, 0.6);
     transform: scale(1.012);
   }
 }
@@ -121,18 +122,18 @@ html, body {
 /* Style 2: Cinzel Starlight (Epic, Rigid Legend) */
 .style-starlight-cinzel {
   font-family: 'Cinzel', Times, serif;
-  font-weight: 600;
-  letter-spacing: 1px;
+  font-weight: 700; /* Solid bold uppercase fantasy serif */
+  letter-spacing: 1.5px;
   color: #f2f5ff;
   animation: starlightBreathe 8s ease-in-out infinite;
 }
 @keyframes starlightBreathe {
   0%, 100% {
-    text-shadow: 0 2px 8px rgba(5, 5, 8, 0.95), 0 0 16px rgba(0, 229, 255, 0.5), 0 0 28px rgba(0, 229, 255, 0.2);
+    text-shadow: 0 2px 8px rgba(5, 5, 8, 1.0), 0 0 22px rgba(0, 229, 255, 0.7), 0 0 35px rgba(0, 229, 255, 0.35);
     transform: scale(1);
   }
   50% {
-    text-shadow: 0 2px 12px rgba(5, 5, 8, 0.95), 0 0 28px rgba(0, 229, 255, 0.75), 0 0 48px rgba(0, 229, 255, 0.35);
+    text-shadow: 0 2px 12px rgba(5, 5, 8, 1.0), 0 0 36px rgba(0, 229, 255, 0.95), 0 0 55px rgba(0, 229, 255, 0.55);
     transform: scale(1.012);
   }
 }
@@ -140,7 +141,7 @@ html, body {
 /* Style 3: Syne Neon (Modern, High-Energy Art) */
 .style-neon-syne {
   font-family: 'Syne', sans-serif;
-  font-weight: 700;
+  font-weight: 800; /* Extra bold layout */
   text-transform: uppercase;
   letter-spacing: 0.5px;
   color: #ffffff;
@@ -148,11 +149,11 @@ html, body {
 }
 @keyframes neonBreathe {
   0%, 100% {
-    text-shadow: 0 2px 8px rgba(5, 5, 8, 0.95), 0 0 18px rgba(255, 82, 82, 0.6), 0 0 30px rgba(255, 82, 82, 0.25);
+    text-shadow: 0 2px 8px rgba(5, 5, 8, 1.0), 0 0 22px rgba(255, 82, 82, 0.75), 0 0 35px rgba(255, 82, 82, 0.4);
     transform: scale(1);
   }
   50% {
-    text-shadow: 0 2px 10px rgba(5, 5, 8, 0.95), 0 0 30px rgba(255, 82, 82, 0.85), 0 0 50px rgba(255, 82, 82, 0.45);
+    text-shadow: 0 2px 10px rgba(5, 5, 8, 1.0), 0 0 36px rgba(255, 82, 82, 0.95), 0 0 60px rgba(255, 82, 82, 0.65);
     transform: scale(1.012);
   }
 }
@@ -160,17 +161,17 @@ html, body {
 /* Style 4: Serene Lexend (Clean, Soothing Dyslexia Focus) */
 .style-serene-lexend {
   font-family: 'Lexend', -apple-system, sans-serif;
-  font-weight: 500;
+  font-weight: 550; /* Thickened slightly for deeper solid reading terminals */
   color: #ffffff;
   animation: sereneBreathe 9s ease-in-out infinite;
 }
 @keyframes sereneBreathe {
   0%, 100% {
-    text-shadow: 0 2px 8px rgba(5, 5, 8, 0.95), 0 0 16px rgba(214, 180, 252, 0.5), 0 0 28px rgba(214, 180, 252, 0.2);
+    text-shadow: 0 2px 8px rgba(5, 5, 8, 1.0), 0 0 20px rgba(214, 180, 252, 0.7), 0 0 32px rgba(214, 180, 252, 0.35);
     transform: scale(1);
   }
   50% {
-    text-shadow: 0 2px 10px rgba(5, 5, 8, 0.95), 0 0 28px rgba(214, 180, 252, 0.75), 0 0 45px rgba(214, 180, 252, 0.35);
+    text-shadow: 0 2px 10px rgba(5, 5, 8, 1.0), 0 0 32px rgba(214, 180, 252, 0.95), 0 0 52px rgba(214, 180, 252, 0.55);
     transform: scale(1.012);
   }
 }
@@ -178,18 +179,17 @@ html, body {
 /* Style 5: Warm Lora (Cozy Campfire, Reflection) */
 .style-warm-lora {
   font-family: 'Lora', Georgia, serif;
-  font-style: italic;
-  font-weight: 500;
+  font-weight: 600; /* Solid upright serif weight */
   color: #fffaf0;
   animation: warmBreathe 8s ease-in-out infinite;
 }
 @keyframes warmBreathe {
   0%, 100% {
-    text-shadow: 0 2px 8px rgba(5, 5, 8, 0.95), 0 0 15px rgba(251, 133, 0, 0.5), 0 0 25px rgba(251, 133, 0, 0.2);
+    text-shadow: 0 2px 8px rgba(5, 5, 8, 1.0), 0 0 22px rgba(251, 133, 0, 0.7), 0 0 35px rgba(251, 133, 0, 0.35);
     transform: scale(1);
   }
   50% {
-    text-shadow: 0 2px 10px rgba(5, 5, 8, 0.95), 0 0 26px rgba(251, 133, 0, 0.75), 0 0 42px rgba(251, 133, 0, 0.35);
+    text-shadow: 0 2px 10px rgba(5, 5, 8, 1.0), 0 0 36px rgba(251, 133, 0, 0.95), 0 0 55px rgba(251, 133, 0, 0.55);
     transform: scale(1.012);
   }
 }

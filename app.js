@@ -297,17 +297,20 @@ function renderActiveSpark() {
     const styleClass = spark.styleClass || "style-serene-lexend";
     quoteText.classList.add(styleClass);
     
-    // Dynamic Font-Sizing based on Quote Length (Dyslexia-Friendly Layout Scaling)
+    // Dynamic Font-Sizing based on Quote Length and Typeface Thickness (Empathetic Layout Scaling)
     const length = spark.text.length;
+    const isThinSerif = ['style-gold-cormorant', 'style-starlight-cinzel', 'style-warm-lora'].includes(styleClass);
+    const multiplier = isThinSerif ? 1.18 : 1.0; // Boost size by 18% for thinner delicate fonts
+    
     if (length < 65) {
       // Short quotes are large and bold
-      quoteText.style.fontSize = "clamp(1.7rem, 7vw, 2.4rem)";
+      quoteText.style.fontSize = `clamp(${1.8 * multiplier}rem, ${7.5 * multiplier}vw, ${2.5 * multiplier}rem)`;
     } else if (length < 130) {
       // Medium quotes scale down slightly
-      quoteText.style.fontSize = "clamp(1.3rem, 5.2vw, 1.85rem)";
+      quoteText.style.fontSize = `clamp(${1.35 * multiplier}rem, ${5.5 * multiplier}vw, ${1.9 * multiplier}rem)`;
     } else {
       // Very long quotes are scaled to fit perfectly on any phone screen
-      quoteText.style.fontSize = "clamp(1.05rem, 4.4vw, 1.45rem)";
+      quoteText.style.fontSize = `clamp(${1.1 * multiplier}rem, ${4.6 * multiplier}vw, ${1.5 * multiplier}rem)`;
     }
     
     quoteCard.classList.add('fade-in');
