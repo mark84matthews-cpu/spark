@@ -508,22 +508,24 @@ async function queryAIQuotes(userQuery) {
   }
 
   const API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent';
-  const prompt = `You are an elite, highly insightful quote curator and literary expert.
-The user spoke their query using Web Speech-to-Text. It is highly likely to contain phonetic mishearings, typos, or garbled fantasy/philosophical terms (e.g., 'calendar' or 'calladin' instead of 'Kaladin', 'wit' or 'white' instead of 'Wit', 'oath bringer' instead of 'Oathbringer', 'words of radiance' instead of 'Words of Radiance', 'marcus' instead of 'Marcus Aurelius').
+  const prompt = `You are an elite, highly insightful quote curator, literary expert, and general wisdom archivist.
+The user spoke or typed their query: "${userQuery}".
 
-User query: "${userQuery}"
+It is highly likely to contain phonetic mishearings, typos, or garbled terms (e.g., 'calendar' or 'calladin' instead of 'Kaladin', 'wit' or 'white' instead of 'Wit', 'oath bringer' instead of 'Oathbringer', 'words of radiance' instead of 'Words of Radiance', 'marcus' instead of 'Marcus Aurelius').
 
 INSTRUCTIONS:
-1. Reconstruct the user's intended query by analyzing phonetic sounds and context (e.g., if they said "wit failures", they meant Wit's quotes on failure).
-2. Find up to 5 real, powerful, and deeply inspirational quotes that perfectly match the reconstructed query.
-3. Ensure the quotes are real, verbatim from literature (like fantasy books, classic stories, philosophy) or historical contexts.
-4. For each quote, identify the exact speaker/author and the source book (e.g., "Wit — Oathbringer by Brandon Sanderson" or "Marcus Aurelius — Meditations").
+1. Reconstruct the user's intended query by analyzing phonetic sounds and context.
+2. Find up to 5 real, powerful, and deeply inspirational quotes, general wisdom statements, or rich literary extracts/passages matching the query.
+3. Broaden your search to allow ANY topic:
+   - General quotes & wisdom (e.g., "inspiring quotes", stoic philosophy, or even playful/quirky queries like "quotes about a tomato").
+   - Deep literary extracts: If they search for a book, character, or story theme, feel free to return a rich, powerful paragraph or passage (up to 3-4 sentences) that fully captures the scene/moment rather than just a single short sentence.
+4. For each quote/extract, identify the exact speaker/author and source context (e.g., "Wit — Oathbringer by Brandon Sanderson" or "Marcus Aurelius — Meditations" or "General Wisdom" or "Playful Reflection").
 5. If the query is highly personal or cannot be matched to literature, do not fail. Instead, write 2 or 3 beautifully polished, inspiring, poetic variations of the user's words as quotes, credited to "Personal Reflection".
 6. Output must be strictly valid JSON according to this schema:
     {
       "quotes": [
         {
-          "text": "The exact quote verbatim",
+          "text": "The exact quote verbatim or rich literary extract (up to 3-4 sentences)",
           "author": "Character/Author — Book Title/Source"
         }
       ]
