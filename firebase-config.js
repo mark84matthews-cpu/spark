@@ -7,13 +7,14 @@
  * 3. Add Firestore Database inside your Firebase Console and enable reads/writes.
  */
 
-window.firebaseConfigured = false; // Toggle to true to connect to the cloud!
+window.firebaseConfigured = true; // Toggle to true to connect to the cloud!
 
 window.firebaseConfig = {
-  apiKey: "YOUR_API_KEY_HERE",
-  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT_ID.appspot.com",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyDyC9FI0kv7IoC8cgRRdNS7VvTK2H-eFDE",
+  authDomain: "spark-c6a27.firebaseapp.com",
+  projectId: "spark-c6a27",
+  storageBucket: "spark-c6a27.firebasestorage.app",
+  messagingSenderId: "470321361603",
+  appId: "1:470321361603:web:135fc9184b7d6591b2a876",
+  measurementId: "G-WYCV6R7X94"
 };

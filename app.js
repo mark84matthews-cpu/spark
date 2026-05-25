@@ -76,7 +76,8 @@ function getRandomBg(mood) {
   };
   const keywords = keywordMap[mood] || "nature,landscape";
   const uniqueId = Math.floor(Math.random() * 1000000);
-  return `https://images.unsplash.com/featured/1200x800/?${keywords}&sig=${uniqueId}`;
+  const time = Date.now();
+  return `https://images.unsplash.com/featured/1200x800/?${keywords}&sig=${uniqueId}&t=${time}`;
 }
 
 // Global App State
@@ -117,6 +118,20 @@ const cancelDictation = document.getElementById('cancel-dictation');
 const doneSpeakingBtn = document.getElementById('done-speaking-btn');
 const tryAgainDictation = document.getElementById('try-again-dictation');
 const saveDictation = document.getElementById('save-dictation');
+
+// Floating Actions & Delete Overlay
+const deleteBtn = document.getElementById('delete-btn');
+const changeBgBtn = document.getElementById('change-bg-btn');
+const deleteOverlay = document.getElementById('delete-overlay');
+const cancelDelete = document.getElementById('cancel-delete');
+const confirmDelete = document.getElementById('confirm-delete');
+
+// Backdrop Customization Overlay
+const backdropOverlay = document.getElementById('backdrop-overlay');
+const backdropInput = document.getElementById('backdrop-input');
+const cancelBackdrop = document.getElementById('cancel-backdrop');
+const surpriseBackdrop = document.getElementById('surprise-backdrop');
+const applyBackdrop = document.getElementById('apply-backdrop');
 
 // Settings Elements
 const settingsBtn = document.getElementById('settings-btn');
@@ -723,6 +738,120 @@ aiTextQueryBtn.addEventListener('click', () => {
   // Clear settings input
   aiTextQueryInput.value = "";
 });
+
+// ----------------------------------------------------
+// FLOATING CANVAS ACTIONS: Banishing Quotes & Swapping Backgrounds
+// ----------------------------------------------------
+deleteBtn.addEventListener('click', () => {
+  const pool = getFilteredSparks();
+  if (pool.length === 0) return;
+  deleteOverlay.classList.remove('hidden');
+});
+
+cancelDelete.addEventListener('click', () => {
+  deleteOverlay.classList.add('hidden');
+});
+
+confirmDelete.addEventListener('click', async () => {
+  const pool = getFilteredSparks();
+  if (pool.length === 0) return;
+  
+  const activeSpark = pool[currentSparkIndex];
+  
+  // 1. Filter out the banished spark from our active database array
+  sparks = sparks.filter(s => s.id !== activeSpark.id);
+  saveToLocalStorage();
+  
+  // 2. Sync deletion to Firestore cloud database in background
+  if (db) {
+    try {
+      await db.collection("moments").doc(activeSpark.id).delete();
+    } catch (e) {
+      console.warn("Could not delete from Firestore. Local banish secure.", e);
+    }
+  }
+  
+  deleteOverlay.classList.add('hidden');
+  
+  // 3. Recalculate index bounds and smoothly cycle quote
+  const newPool = getFilteredSparks();
+  if (currentSparkIndex >= newPool.length && currentSparkIndex > 0) {
+    currentSparkIndex = newPool.length - 1;
+  }
+  
+  renderActiveSpark();
+});
+
+// Open Backdrop customizer
+changeBgBtn.addEventListener('click', () => {
+  const pool = getFilteredSparks();
+  if (pool.length === 0) return;
+  backdropInput.value = "";
+  backdropOverlay.classList.remove('hidden');
+  backdropInput.focus();
+});
+
+cancelBackdrop.addEventListener('click', () => {
+  backdropOverlay.classList.add('hidden');
+});
+
+surpriseBackdrop.addEventListener('click', async () => {
+  const pool = getFilteredSparks();
+  if (pool.length === 0) return;
+  
+  const activeSpark = pool[currentSparkIndex];
+  const newBg = getRandomBg(activeSpark.mood);
+  
+  backdropOverlay.classList.add('hidden');
+  await updateBackdropImage(activeSpark, newBg);
+});
+
+applyBackdrop.addEventListener('click', async () => {
+  const pool = getFilteredSparks();
+  if (pool.length === 0) return;
+  
+  const activeSpark = pool[currentSparkIndex];
+  const text = backdropInput.value.trim();
+  
+  if (!text) {
+    alert("Please enter keywords or a URL.");
+    return;
+  }
+  
+  let newBg = "";
+  if (text.startsWith("http://") || text.startsWith("https://")) {
+    newBg = text;
+  } else {
+    // Generate beautiful Unsplash landscape URL using their custom keyword search prompt
+    const cleanKeywords = encodeURIComponent(text);
+    const uniqueId = Math.floor(Math.random() * 1000000);
+    const time = Date.now();
+    newBg = `https://images.unsplash.com/featured/1200x800/?${cleanKeywords}&sig=${uniqueId}&t=${time}`;
+  }
+  
+  backdropOverlay.classList.add('hidden');
+  await updateBackdropImage(activeSpark, newBg);
+});
+
+async function updateBackdropImage(activeSpark, newBg) {
+  // 1. Update background image URL in local quote object
+  activeSpark.bgUrl = newBg;
+  saveToLocalStorage();
+  
+  // 2. Sync background update to Firestore in background
+  if (db) {
+    try {
+      await db.collection("moments").doc(activeSpark.id).update({
+        bgUrl: newBg
+      });
+    } catch (e) {
+      console.warn("Could not sync background update to cloud. Local update secure.", e);
+    }
+  }
+  
+  // 3. Instantly trigger a premium cross-fade transition
+  changeBackground(newBg);
+}
 
 // Initialize on Load
 document.addEventListener('DOMContentLoaded', () => {

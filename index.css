@@ -798,3 +798,83 @@ html, body {
   width: 100% !important;
 }
 
+/* Floating Action Toolbar */
+#canvas-actions {
+  position: absolute;
+  bottom: calc(max(20px, env(safe-area-inset-bottom)) + 65px);
+  left: 24px;
+  right: 24px;
+  display: flex;
+  justify-content: space-between;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.action-btn-floating {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.35);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  outline: none;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  pointer-events: auto;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.35);
+}
+
+.action-btn-floating:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+}
+
+#delete-btn:hover {
+  color: #ff5252;
+  border-color: rgba(255, 82, 82, 0.3);
+  background: rgba(255, 82, 82, 0.05);
+}
+
+#change-bg-btn:hover {
+  color: #ffe699;
+}
+
+.action-btn-floating:active {
+  transform: scale(0.9);
+}
+
+.action-icon {
+  width: 16px;
+  height: 16px;
+}
+
+/* Delete and Backdrop confirmation overlay settings */
+#delete-overlay, #backdrop-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(5, 5, 8, 0.85);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 24px;
+  z-index: 101;
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  opacity: 1;
+  transition: opacity 0.4s ease;
+}
+
+#delete-overlay.hidden, #backdrop-overlay.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+

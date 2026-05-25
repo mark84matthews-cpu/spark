@@ -1,9 +1,10 @@
-const CACHE_NAME = 'spark-cache-v8';
+const CACHE_NAME = 'spark-cache-v10';
 const ASSETS = [
   './',
   './index.html',
   './index.css',
   './app.js',
+  './firebase-config.js',
   './manifest.json',
   './icon.svg'
 ];
