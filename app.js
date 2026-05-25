@@ -565,10 +565,7 @@ Do NOT include any markdown code blocks, backticks, or explanation outside the J
   const payload = {
     contents: [{
       parts: [{ text: prompt }]
-    }],
-    generationConfig: {
-      responseMimeType: "application/json"
-    }
+    }]
   };
 
   const response = await fetch(`${API_URL}?key=${apiKey}`, {
