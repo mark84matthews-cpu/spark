@@ -1,3 +1,27 @@
+// Hand-curated premium natural landscape backdrops (100% stable & high-contrast)
+const PRESET_BACKGROUNDS = [
+  "https://images.unsplash.com/photo-1502082553048-f009c37129b9?auto=format&fit=crop&w=1200&q=80", // Misty redwoods
+  "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=1200&q=80", // Golden hills
+  "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1200&q=80", // Jagged peaks
+  "https://images.unsplash.com/photo-1454496522488-7a8e488e8606?auto=format&fit=crop&w=1200&q=80", // Snowy mountains
+  "https://images.unsplash.com/photo-1475924156734-496f6cac6ec1?auto=format&fit=crop&w=1200&q=80", // Lavender field
+  "https://images.unsplash.com/photo-1439853949127-fa647821ebb0?auto=format&fit=crop&w=1200&q=80", // Alpine starry lake
+  "https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?auto=format&fit=crop&w=1200&q=80", // Starry forest campfire
+  "https://images.unsplash.com/photo-1483347756197-71ef80e95f73?auto=format&fit=crop&w=1200&q=80", // Northern lights aurora
+  "https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=1200&q=80", // Foggy pine forest
+  "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=1200&q=80", // Sunlit autumn woods
+  "https://images.unsplash.com/photo-1506318137071-a8e063b4bec0?auto=format&fit=crop&w=1200&q=80", // Desert galaxy starlight
+  "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80", // Twilight ocean shore
+  "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80", // Yosemite river
+  "https://images.unsplash.com/photo-1506012787146-f92b2d7d6d96?auto=format&fit=crop&w=1200&q=80", // Sunlit mountain peaks
+  "https://images.unsplash.com/photo-1473448912268-2022ce9509d8?auto=format&fit=crop&w=1200&q=80", // Golden autumn trees
+  "https://images.unsplash.com/photo-1498084393753-b411b2d26b34?auto=format&fit=crop&w=1200&q=80", // Purple twilight winter forest
+  "https://images.unsplash.com/photo-1526481280693-3bfa7568e0f3?auto=format&fit=crop&w=1200&q=80", // Lakeside camp night
+  "https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?auto=format&fit=crop&w=1200&q=80", // Dark cosmic stars
+  "https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=1200&q=80", // Tropical cliffs sea
+  "https://images.unsplash.com/photo-1518837695005-2083093ee35b?auto=format&fit=crop&w=1200&q=80"  // Quiet pink sunset sky
+];
+
 // Default preloaded Wit/Hoid quotes mapped to unique picturesque natural landscapes
 const DEFAULT_SPARKS = [
   {
@@ -66,18 +90,17 @@ const DEFAULT_SPARKS = [
   }
 ];
 
-// Dynamic Unsplash Featured Image helper generating beautiful, unique landscapes matching each mood
+// Dynamic preset landscape picker custom-matched to each target positive feeling
 function getRandomBg(mood) {
-  const keywordMap = {
-    hopeful: "sunrise,mist,redwoods",
-    determined: "mountains,cliff,peaks",
-    peaceful: "lake,stars,twilight",
-    inspired: "campfire,forest,milkyway"
+  const indexMap = {
+    hopeful: [0, 1, 4, 13, 14],      // Sunrises, glowing hills, bright mountains
+    determined: [2, 3, 8, 9, 18],    // Massive peaks, dense woods, stark sky
+    peaceful: [5, 10, 11, 15, 19],   // Alpine lakes, autumn forests, pink sunset
+    inspired: [6, 7, 12, 16, 17]     // Campfires, starry sky, northern lights
   };
-  const keywords = keywordMap[mood] || "nature,landscape";
-  const uniqueId = Math.floor(Math.random() * 1000000);
-  const time = Date.now();
-  return `https://images.unsplash.com/featured/1200x800/?${keywords}&sig=${uniqueId}&t=${time}`;
+  const pool = indexMap[mood] || [0, 1, 2, 3];
+  const randomIndex = pool[Math.floor(Math.random() * pool.length)];
+  return PRESET_BACKGROUNDS[randomIndex];
 }
 
 // Global App State
@@ -128,10 +151,9 @@ const confirmDelete = document.getElementById('confirm-delete');
 
 // Backdrop Customization Overlay
 const backdropOverlay = document.getElementById('backdrop-overlay');
-const backdropInput = document.getElementById('backdrop-input');
 const cancelBackdrop = document.getElementById('cancel-backdrop');
 const surpriseBackdrop = document.getElementById('surprise-backdrop');
-const applyBackdrop = document.getElementById('apply-backdrop');
+const backdropGrid = document.getElementById('backdrop-grid');
 
 // Settings Elements
 const settingsBtn = document.getElementById('settings-btn');
@@ -345,6 +367,12 @@ function changeBackground(url) {
   const tempImg = new Image();
   tempImg.src = url;
   tempImg.onload = () => {
+    inactiveLayer.style.backgroundImage = `url('${url}')`;
+    activeLayer.classList.remove('active');
+    inactiveLayer.classList.add('active');
+  };
+  tempImg.onerror = () => {
+    // Fallback: apply background instantly even if preloading hits a connection timeout
     inactiveLayer.style.backgroundImage = `url('${url}')`;
     activeLayer.classList.remove('active');
     inactiveLayer.classList.add('active');
@@ -783,13 +811,46 @@ confirmDelete.addEventListener('click', async () => {
   renderActiveSpark();
 });
 
+// Render the visual backdrop preset thumbnail grid
+function renderBackdropGrid() {
+  backdropGrid.innerHTML = "";
+  PRESET_BACKGROUNDS.forEach((url) => {
+    const thumb = document.createElement('div');
+    thumb.className = "backdrop-thumbnail";
+    thumb.style.backgroundImage = `url('${url}')`;
+    thumb.setAttribute('data-url', url);
+    
+    thumb.addEventListener('click', async () => {
+      const pool = getFilteredSparks();
+      if (pool.length === 0) return;
+      
+      const activeSpark = pool[currentSparkIndex];
+      
+      // Update visual selection indicators
+      document.querySelectorAll('.backdrop-thumbnail').forEach(t => t.classList.remove('selected'));
+      thumb.classList.add('selected');
+      
+      backdropOverlay.classList.add('hidden');
+      await updateBackdropImage(activeSpark, url);
+    });
+    
+    backdropGrid.appendChild(thumb);
+  });
+}
+
 // Open Backdrop customizer
 changeBgBtn.addEventListener('click', () => {
   const pool = getFilteredSparks();
   if (pool.length === 0) return;
-  backdropInput.value = "";
+  
+  // Pre-highlight current backdrop in the grid
+  const activeSpark = pool[currentSparkIndex];
+  document.querySelectorAll('.backdrop-thumbnail').forEach(thumb => {
+    const url = thumb.getAttribute('data-url');
+    thumb.classList.toggle('selected', url === activeSpark.bgUrl);
+  });
+  
   backdropOverlay.classList.remove('hidden');
-  backdropInput.focus();
 });
 
 cancelBackdrop.addEventListener('click', () => {
@@ -801,34 +862,8 @@ surpriseBackdrop.addEventListener('click', async () => {
   if (pool.length === 0) return;
   
   const activeSpark = pool[currentSparkIndex];
-  const newBg = getRandomBg(activeSpark.mood);
-  
-  backdropOverlay.classList.add('hidden');
-  await updateBackdropImage(activeSpark, newBg);
-});
-
-applyBackdrop.addEventListener('click', async () => {
-  const pool = getFilteredSparks();
-  if (pool.length === 0) return;
-  
-  const activeSpark = pool[currentSparkIndex];
-  const text = backdropInput.value.trim();
-  
-  if (!text) {
-    alert("Please enter keywords or a URL.");
-    return;
-  }
-  
-  let newBg = "";
-  if (text.startsWith("http://") || text.startsWith("https://")) {
-    newBg = text;
-  } else {
-    // Generate beautiful Unsplash landscape URL using their custom keyword search prompt
-    const cleanKeywords = encodeURIComponent(text);
-    const uniqueId = Math.floor(Math.random() * 1000000);
-    const time = Date.now();
-    newBg = `https://images.unsplash.com/featured/1200x800/?${cleanKeywords}&sig=${uniqueId}&t=${time}`;
-  }
+  // Select a random landscape from our premium preset deck
+  const newBg = PRESET_BACKGROUNDS[Math.floor(Math.random() * PRESET_BACKGROUNDS.length)];
   
   backdropOverlay.classList.add('hidden');
   await updateBackdropImage(activeSpark, newBg);
@@ -858,4 +893,5 @@ async function updateBackdropImage(activeSpark, newBg) {
 document.addEventListener('DOMContentLoaded', () => {
   initDatabase();
   renderActiveSpark();
+  renderBackdropGrid();
 });

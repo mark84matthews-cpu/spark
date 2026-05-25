@@ -183,14 +183,16 @@
 
     <!-- Translucent Backdrop Customization Overlay -->
     <div id="backdrop-overlay" class="hidden">
-      <div class="modal-card">
-        <h3 class="settings-title">Custom Backdrop</h3>
-        <p class="settings-desc font-small">Type keywords (e.g., 'forest rain') or paste a direct image URL:</p>
-        <input type="text" id="backdrop-input" placeholder="Type search prompt or URL..." class="settings-input">
+      <div class="modal-card wide-modal scroll-modal">
+        <h3 class="settings-title">Select Backdrop</h3>
+        <p class="settings-desc font-small">Tap any stunning landscape below to instantly set your backdrop:</p>
+        
+        <!-- Grid container for curated natural masterpiece images -->
+        <div id="backdrop-grid" class="backdrop-grid-container"></div>
+
         <div class="modal-actions">
           <button id="cancel-backdrop" class="modal-btn secondary">Cancel</button>
-          <button id="surprise-backdrop" class="modal-btn secondary">Surprise Me</button>
-          <button id="apply-backdrop" class="modal-btn primary">Apply</button>
+          <button id="surprise-backdrop" class="modal-btn primary">Surprise Me</button>
         </div>
       </div>
     </div>
