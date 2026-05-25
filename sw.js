@@ -1,4 +1,4 @@
-const CACHE_NAME = 'spark-cache-v11';
+const CACHE_NAME = 'spark-cache-v12';
 const ASSETS = [
   './',
   './index.html',

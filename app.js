@@ -336,6 +336,7 @@ function renderActiveSpark() {
   setTimeout(() => {
     quoteText.textContent = spark.text;
     quoteAuthor.textContent = spark.author;
+    document.getElementById('quote-mood-tag').value = spark.mood;
     
     // Reset previous style classes
     quoteText.className = "";
@@ -407,12 +408,53 @@ localSearchInput.addEventListener('input', () => {
 });
 
 // Tap quote card to cycle quotes
-quoteCard.addEventListener('click', () => {
+quoteCard.addEventListener('click', (e) => {
+  // Stop cycling if they clicked the individual mood pill
+  if (e.target.closest('#quote-mood-tag')) return;
+
   const pool = getFilteredSparks();
   if (pool.length > 1) {
     currentSparkIndex = (currentSparkIndex + 1) % pool.length;
     renderActiveSpark();
   }
+});
+
+// Re-tag active quote mood on the fly
+document.getElementById('quote-mood-tag').addEventListener('change', async (e) => {
+  const pool = getFilteredSparks();
+  if (pool.length === 0) return;
+  
+  const activeSpark = pool[currentSparkIndex];
+  const newMood = e.target.value;
+  
+  if (activeSpark.mood === newMood) return;
+  
+  // 1. Update mood locally
+  activeSpark.mood = newMood;
+  
+  // Also pick a matching background for the new mood feeling!
+  activeSpark.bgUrl = getRandomBg(newMood);
+  saveToLocalStorage();
+  
+  // 2. Sync tag update to Firestore cloud
+  if (db) {
+    try {
+      await db.collection("moments").doc(activeSpark.id).update({
+        mood: newMood,
+        bgUrl: activeSpark.bgUrl
+      });
+    } catch (err) {
+      console.warn("Could not sync mood re-tag to cloud. Local secure.", err);
+    }
+  }
+  
+  // 3. Smoothly fade card and cycle/re-render (it now belongs to a different screen tab!)
+  const newPool = getFilteredSparks();
+  if (currentSparkIndex >= newPool.length && currentSparkIndex > 0) {
+    currentSparkIndex = newPool.length - 1;
+  }
+  
+  renderActiveSpark();
 });
 
 // Mood selector button handlers
