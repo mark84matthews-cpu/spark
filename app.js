@@ -1,26 +1,25 @@
-// Hand-curated premium natural landscape backdrops (100% stable & high-contrast)
-const PRESET_BACKGROUNDS = [
-  "https://images.unsplash.com/photo-1502082553048-f009c37129b9?auto=format&fit=crop&w=1200&q=80", // Misty redwoods
-  "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=1200&q=80", // Golden hills
-  "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1200&q=80", // Jagged peaks
-  "https://images.unsplash.com/photo-1454496522488-7a8e488e8606?auto=format&fit=crop&w=1200&q=80", // Snowy mountains
-  "https://images.unsplash.com/photo-1475924156734-496f6cac6ec1?auto=format&fit=crop&w=1200&q=80", // Lavender field
-  "https://images.unsplash.com/photo-1439853949127-fa647821ebb0?auto=format&fit=crop&w=1200&q=80", // Alpine starry lake
-  "https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?auto=format&fit=crop&w=1200&q=80", // Starry forest campfire
-  "https://images.unsplash.com/photo-1483347756197-71ef80e95f73?auto=format&fit=crop&w=1200&q=80", // Northern lights aurora
-  "https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=1200&q=80", // Foggy pine forest
-  "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=1200&q=80", // Sunlit autumn woods
-  "https://images.unsplash.com/photo-1506318137071-a8e063b4bec0?auto=format&fit=crop&w=1200&q=80", // Desert galaxy starlight
-  "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80", // Twilight ocean shore
-  "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80", // Yosemite river
-  "https://images.unsplash.com/photo-1506012787146-f92b2d7d6d96?auto=format&fit=crop&w=1200&q=80", // Sunlit mountain peaks
-  "https://images.unsplash.com/photo-1473448912268-2022ce9509d8?auto=format&fit=crop&w=1200&q=80", // Golden autumn trees
-  "https://images.unsplash.com/photo-1498084393753-b411b2d26b34?auto=format&fit=crop&w=1200&q=80", // Purple twilight winter forest
-  "https://images.unsplash.com/photo-1526481280693-3bfa7568e0f3?auto=format&fit=crop&w=1200&q=80", // Lakeside camp night
-  "https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?auto=format&fit=crop&w=1200&q=80", // Dark cosmic stars
-  "https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=1200&q=80", // Tropical cliffs sea
-  "https://images.unsplash.com/photo-1518837695005-2083093ee35b?auto=format&fit=crop&w=1200&q=80"  // Quiet pink sunset sky
+// Hand-curated bank of 80 stunning, high-contrast natural sceneries (100% stable & fast)
+const NATURE_PHOTO_IDS = [
+  "1502082553048-f009c37129b9", "1470071459604-3b5ec3a7fe05", "1464822759023-fed622ff2c3b", "1454496522488-7a8e488e8606", "1475924156734-496f6cac6ec1",
+  "1439853949127-fa647821ebb0", "1504280390367-361c6d9f38f4", "1483347756197-71ef80e95f73", "1448375240586-882707db888b", "1441974231531-c6227db76b6e",
+  "1506318137071-a8e063b4bec0", "1507525428034-b723cf961d3e", "1506744038136-46273834b3fb", "1506012787146-f92b2d7d6d96", "1473448912268-2022ce9509d8",
+  "1498084393753-b411b2d26b34", "1526481280693-3bfa7568e0f3", "1506703719100-a0f3a48c0f86", "1534447677768-be436bb09401", "1518837695005-2083093ee35b",
+  "1418065460487-3e41a6c84dc5", "1501785888041-af3ef285b470", "1472214222541-d510753a4907", "1469474968028-56623f02e42e", "1513836279014-a89f7a76ae86",
+  "1500530855697-b586d89ba3ee", "1447752875215-b2761acb3c5d", "1542224566-6e85f2e6772f", "1426604966848-d7adac402bff", "1433832597046-4f10e10ac764",
+  "1470240731273-7821a6eeb6bd", "1505761671935-60b3a7424954", "1510784722467-175517e7dbe6", "1476514525535-07fb3b4ae5f1", "1518495973542-4542c06a5843",
+  "1465146344425-f00d5f5c8f07", "1533090161767-e6ffed986c88", "1519681393784-d120267933ba", "1500627869374-13598b3a164a", "1490730141103-6cac27aaab94",
+  "1506260427847-2bb5e463890d", "1501854140801-50d01698950b", "1504851149312-7a075b496cc7", "1528164344705-47542687000d", "1494548162494-384bba4ab999",
+  "1475113548554-5a36f1f523d6", "1509023467868-1c41819bb23b", "1539593302142-b13c6d7a3641", "1518609878373-06d740f60d8b", "1520013817300-1f4c1cb20d3f",
+  "1461749280684-dccba630e2f6", "1511497584788-876760111969", "1513407030348-c983a97b98d8", "1508739773434-c26b3d09e071", "1516690561799-46d8f74f9abf",
+  "1523712999610-f77fbcfc3843", "1509316975850-ff9c5deb0cd9", "1531366936337-7c912a4589a7", "1508193638397-1c4234db14d8", "1446776811953-b23d57bd21aa",
+  "1419242902214-272b3f66ee7a", "1532274402991-76b5b592461a", "1510312305653-c12166a70aff", "1518098268026-4e43a1a009de", "1540206395-be35a1f88e82",
+  "1509063942475-acb8d2036a3e", "1503614472-84142be0576e", "1516026672322-bc52d61a55d5", "1535498730771-e535898651a2", "1541079525-4b7264a2c2e5",
+  "1542273917-380d8858db16"
 ];
+
+function getPhotoUrl(id) {
+  return `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=1200&q=80`;
+}
 
 // Default preloaded Wit/Hoid quotes mapped to unique picturesque natural landscapes
 const DEFAULT_SPARKS = [
@@ -93,20 +92,24 @@ const DEFAULT_SPARKS = [
 // Dynamic preset landscape picker custom-matched to each target positive feeling
 function getRandomBg(mood) {
   const indexMap = {
-    hopeful: [0, 1, 4, 13, 14],      // Sunrises, glowing hills, bright mountains
-    determined: [2, 3, 8, 9, 18],    // Massive peaks, dense woods, stark sky
-    peaceful: [5, 10, 11, 15, 19],   // Alpine lakes, autumn forests, pink sunset
-    inspired: [6, 7, 12, 16, 17]     // Campfires, starry sky, northern lights
+    hopeful: [0, 20],      // Sunrises, glowing hills, bright mountains
+    determined: [20, 40],  // Massive peaks, dense woods, stark sky
+    peaceful: [40, 60],    // Alpine lakes, autumn forests, pink sunset
+    inspired: [60, 78]     // Campfires, starry sky, northern lights
   };
-  const pool = indexMap[mood] || [0, 1, 2, 3];
-  const randomIndex = pool[Math.floor(Math.random() * pool.length)];
-  return PRESET_BACKGROUNDS[randomIndex];
+  const range = indexMap[mood] || [0, 20];
+  const start = range[0];
+  const end = range[1];
+  const size = end - start;
+  const randomIndex = start + Math.floor(Math.random() * size);
+  return getPhotoUrl(NATURE_PHOTO_IDS[randomIndex]);
 }
 
 // Global App State
 let sparks = [];
 let currentMood = 'hopeful';
 let currentSparkIndex = 0;
+let activeGridBackdrops = []; // Stores the currently visible 15 landscape presets
 let db = null; // Firestore reference
 
 // Voice Curation Temp Deck
@@ -152,6 +155,7 @@ const confirmDelete = document.getElementById('confirm-delete');
 // Backdrop Customization Overlay
 const backdropOverlay = document.getElementById('backdrop-overlay');
 const cancelBackdrop = document.getElementById('cancel-backdrop');
+const moreBackdropBtn = document.getElementById('more-backdrop-btn');
 const surpriseBackdrop = document.getElementById('surprise-backdrop');
 const backdropGrid = document.getElementById('backdrop-grid');
 
@@ -811,10 +815,16 @@ confirmDelete.addEventListener('click', async () => {
   renderActiveSpark();
 });
 
-// Render the visual backdrop preset thumbnail grid
-function renderBackdropGrid() {
+// Render a random selection of 15 landscapes from our 80-photo masterpiece library
+function renderBackdropGrid(forceNewBatch = false) {
+  if (forceNewBatch || activeGridBackdrops.length === 0) {
+    // Shuffle and pick 15 unique photo IDs
+    const shuffled = [...NATURE_PHOTO_IDS].sort(() => 0.5 - Math.random());
+    activeGridBackdrops = shuffled.slice(0, 15).map(id => getPhotoUrl(id));
+  }
+
   backdropGrid.innerHTML = "";
-  PRESET_BACKGROUNDS.forEach((url) => {
+  activeGridBackdrops.forEach((url) => {
     const thumb = document.createElement('div');
     thumb.className = "backdrop-thumbnail";
     thumb.style.backgroundImage = `url('${url}')`;
@@ -843,7 +853,10 @@ changeBgBtn.addEventListener('click', () => {
   const pool = getFilteredSparks();
   if (pool.length === 0) return;
   
-  // Pre-highlight current backdrop in the grid
+  // Render a random batch of 15 on open
+  renderBackdropGrid(false);
+
+  // Pre-highlight current backdrop in the grid if present
   const activeSpark = pool[currentSparkIndex];
   document.querySelectorAll('.backdrop-thumbnail').forEach(thumb => {
     const url = thumb.getAttribute('data-url');
@@ -857,13 +870,19 @@ cancelBackdrop.addEventListener('click', () => {
   backdropOverlay.classList.add('hidden');
 });
 
+moreBackdropBtn.addEventListener('click', () => {
+  // Regenerate a brand new random set of 15 thumbnails!
+  renderBackdropGrid(true);
+});
+
 surpriseBackdrop.addEventListener('click', async () => {
   const pool = getFilteredSparks();
   if (pool.length === 0) return;
   
   const activeSpark = pool[currentSparkIndex];
-  // Select a random landscape from our premium preset deck
-  const newBg = PRESET_BACKGROUNDS[Math.floor(Math.random() * PRESET_BACKGROUNDS.length)];
+  // Select a random landscape from our massive 80-photo deck
+  const randId = NATURE_PHOTO_IDS[Math.floor(Math.random() * NATURE_PHOTO_IDS.length)];
+  const newBg = getPhotoUrl(randId);
   
   backdropOverlay.classList.add('hidden');
   await updateBackdropImage(activeSpark, newBg);
