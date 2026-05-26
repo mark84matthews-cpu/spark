@@ -562,7 +562,7 @@ async function queryAIQuotes(userQuery) {
     };
   }
 
-  const API_URL = 'https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent';
+  const API_URL = 'https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent';
   const prompt = `You are an elite, highly insightful quote curator, literary expert, and general wisdom archivist.
 The user spoke or typed their query: "${userQuery}".
 
