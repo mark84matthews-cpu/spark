@@ -173,8 +173,33 @@ const aiTextQueryBtn = document.getElementById('ai-text-query-btn');
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('./sw.js')
-      .then(reg => console.log('Service Worker registered successfully!', reg.scope))
+      .then(reg => {
+        console.log('Service Worker registered successfully!', reg.scope);
+        
+        // Listen for new service worker updates
+        reg.onupdatefound = () => {
+          const installingWorker = reg.installing;
+          installingWorker.onstatechange = () => {
+            if (installingWorker.state === 'installed') {
+              if (navigator.serviceWorker.controller) {
+                // New update is installed; reload to apply it instantly
+                console.log('New update installed! Forcing clean reload...');
+                window.location.reload();
+              }
+            }
+          };
+        };
+      })
       .catch(err => console.log('Service Worker registration failed:', err));
+  });
+
+  // Automatically refresh when the new active service worker takes control
+  let refreshing = false;
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (!refreshing) {
+      refreshing = true;
+      window.location.reload();
+    }
   });
 }
 
