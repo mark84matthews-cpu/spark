@@ -178,6 +178,15 @@
           <input type="text" id="ai-text-query-input" placeholder="Type prompt (e.g. Wit quotes on hope)..." class="settings-input">
           <button id="ai-text-query-btn" class="modal-btn primary width-100">Fetch Quotes from AI</button>
         </div>
+
+        <hr class="settings-divider">
+
+        <div class="settings-section">
+          <h4 class="settings-section-title">Diagnostics</h4>
+          <p class="settings-desc font-small">Test your API key to see which Gemini models your account has access to.</p>
+          <button id="run-diagnostics-btn" class="modal-btn secondary width-100" style="margin-top: 8px; border: 1px solid rgba(255,255,255,0.15);">Check Supported Models</button>
+          <div id="diagnostics-result" class="settings-desc font-small hidden" style="background: rgba(255,255,255,0.05); padding: 10px; border-radius: 6px; margin-top: 8px; white-space: pre-wrap; max-height: 120px; overflow-y: auto; text-align: left; border: 1px solid rgba(255,255,255,0.1); font-family: monospace; line-height: 1.4;"></div>
+        </div>
         
         <div class="modal-actions">
           <button id="close-settings" class="modal-btn secondary">Close Settings</button>

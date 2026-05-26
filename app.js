@@ -1036,6 +1036,61 @@ async function updateBackdropImage(activeSpark, newBg) {
   changeBackground(newBg);
 }
 
+// ----------------------------------------------------
+// SETTINGS DIAGNOSTICS KEY TESTING
+// ----------------------------------------------------
+const runDiagnosticsBtn = document.getElementById('run-diagnostics-btn');
+const diagnosticsResult = document.getElementById('diagnostics-result');
+
+if (runDiagnosticsBtn) {
+  runDiagnosticsBtn.addEventListener('click', async () => {
+    const apiKey = geminiKeyInput.value.trim() || localStorage.getItem('spark_gemini_key');
+    if (!apiKey) {
+      diagnosticsResult.textContent = "Please save or enter an API Key above first.";
+      diagnosticsResult.classList.remove('hidden');
+      return;
+    }
+
+    diagnosticsResult.textContent = "Querying Google API...";
+    diagnosticsResult.classList.remove('hidden');
+
+    try {
+      const response = await fetch(`https://generativelanguage.googleapis.com/v1/models?key=${apiKey}`);
+      if (!response.ok) {
+        let errText = `HTTP Error ${response.status}`;
+        try {
+          const errJson = await response.json();
+          if (errJson && errJson.error && errJson.error.message) {
+            errText = errJson.error.message;
+          }
+        } catch (e) {}
+        diagnosticsResult.textContent = `Error: ${errText}`;
+        return;
+      }
+
+      const data = await response.json();
+      if (!data.models || data.models.length === 0) {
+        diagnosticsResult.textContent = "No models found under your account key.";
+        return;
+      }
+
+      // Filter and print models that support generateContent
+      const supportedModels = data.models
+        .filter(m => m.supportedGenerationMethods && m.supportedGenerationMethods.includes('generateContent'))
+        .map(m => m.name.replace('models/', ''))
+        .join('\n');
+
+      if (!supportedModels) {
+        diagnosticsResult.textContent = "Your API key has access to models, but none support generateContent.";
+      } else {
+        diagnosticsResult.textContent = `Success! Available Models:\n\n${supportedModels}`;
+      }
+    } catch (err) {
+      diagnosticsResult.textContent = `Failed to connect:\n${err.message}`;
+    }
+  });
+}
+
 // Initialize on Load
 document.addEventListener('DOMContentLoaded', () => {
   initDatabase();
