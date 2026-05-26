@@ -826,6 +826,19 @@ html, body {
   overflow-y: auto;
 }
 
+.settings-modal-card {
+  width: 96% !important;
+  max-width: 480px !important;
+  height: auto !important;
+  max-height: 88vh !important;
+  overflow-y: auto !important;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 28px 24px !important;
+  border-radius: 24px !important;
+}
+
 .settings-section {
   width: 100%;
   display: flex;
